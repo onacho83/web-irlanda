@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Gestión de Imprenta</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>🎨 Dashboard de Gestión</h1>
+            <nav>
+                <a href="index.html" class="btn btn-secondary" target="_blank">Ver Sitio Web</a>
+                <button id="reset-btn" class="btn btn-danger">Restablecer Valores</button>
+            </nav>
+        </header>
+
+        <main class="dashboard-main">
+            <section class="dashboard-section">
+                <h2>🎨 Colores Principales</h2>
+                <div class="controls-grid">
+                    <div class="control-group">
+                        <label for="color-primary">Color Principal</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="color-primary" value="#2563eb">
+                            <input type="text" id="color-primary-text" value="#2563eb" class="color-text-input">
+                        </div>
+                        <small>Usado en: logo, enlaces, botones principales</small>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="color-secondary">Color Secundario</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="color-secondary" value="#1e40af">
+                            <input type="text" id="color-secondary-text" value="#1e40af" class="color-text-input">
+                        </div>
+                        <small>Usado en: gradientes, elementos secundarios</small>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="color-accent">Color de Acento</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="color-accent" value="#f59e0b">
+                            <input type="text" id="color-accent-text" value="#f59e0b" class="color-text-input">
+                        </div>
+                        <small>Usado en: títulos del footer, elementos destacados</small>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>📝 Colores de Texto</h2>
+                <div class="controls-grid">
+                    <div class="control-group">
+                        <label for="color-text">Color de Texto Principal</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="color-text" value="#1f2937">
+                            <input type="text" id="color-text-text" value="#1f2937" class="color-text-input">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="color-text-light">Color de Texto Secundario</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="color-text-light" value="#6b7280">
+                            <input type="text" id="color-text-light-text" value="#6b7280" class="color-text-input">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>🎭 Fondos</h2>
+                <div class="controls-grid">
+                    <div class="control-group">
+                        <label for="color-background">Fondo Principal</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="color-background" value="#ffffff">
+                            <input type="text" id="color-background-text" value="#ffffff" class="color-text-input">
+                        </div>
+                        <small>Fondo general de la página</small>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="color-background-light">Fondo Secundario</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="color-background-light" value="#f9fafb">
+                            <input type="text" id="color-background-light-text" value="#f9fafb" class="color-text-input">
+                        </div>
+                        <small>Usado en: sección de contacto</small>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="background-type">Tipo de Fondo del Hero</label>
+                        <select id="background-type" class="select-input">
+                            <option value="gradient">Gradiente (Actual)</option>
+                            <option value="solid">Color Sólido</option>
+                            <option value="image">Imagen</option>
+                        </select>
+                        <small>Estilo del fondo de la sección principal</small>
+                    </div>
+
+                    <div class="control-group" id="hero-background-color-group">
+                        <label for="hero-background-color">Color de Fondo del Hero (Sólido)</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="hero-background-color" value="#2563eb">
+                            <input type="text" id="hero-background-color-text" value="#2563eb" class="color-text-input">
+                        </div>
+                    </div>
+
+                    <div class="control-group" id="hero-background-image-group" style="display: none;">
+                        <label for="hero-background-image">URL de Imagen de Fondo</label>
+                        <input type="text" id="hero-background-image" class="text-input" placeholder="https://ejemplo.com/imagen.jpg">
+                        <small>Ingresa la URL de una imagen</small>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>📊 Vista Previa</h2>
+                <div class="preview-container">
+                    <iframe id="preview-frame" src="index.html" frameborder="0"></iframe>
+                </div>
+                <div class="preview-controls">
+                    <button id="refresh-preview-btn" class="btn btn-primary">Actualizar Vista Previa</button>
+                </div>
+            </section>
+        </main>
+
+        <div class="notification" id="notification">
+            <span id="notification-text"></span>
+        </div>
+    </div>
+
+    <script type="module" src="js/dashboard/config-storage.js"></script>
+    <script type="module" src="js/dashboard/theme-manager.js"></script>
+    <script type="module" src="js/dashboard/background-manager.js"></script>
+    <script type="module" src="js/dashboard/dashboard-app.js"></script>
+</body>
+</html>
+

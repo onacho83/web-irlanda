@@ -3,6 +3,7 @@
  * Principio SOLID: Single Responsibility - Coordina la inicialización de la aplicación
  */
 import ConfigLoader from './config-loader.js';
+import ThemeApplier from './theme-applier.js';
 import HeaderRenderer from './renderers/header-renderer.js';
 import ServiciosRenderer from './renderers/servicios-renderer.js';
 import ContactoRenderer from './renderers/contacto-renderer.js';
@@ -11,6 +12,7 @@ import FooterRenderer from './renderers/footer-renderer.js';
 class App {
     constructor() {
         this.configLoader = new ConfigLoader();
+        this.themeApplier = new ThemeApplier();
         this.initializeRenderers();
     }
 
@@ -29,6 +31,9 @@ class App {
      */
     async init() {
         try {
+            // Aplicar tema personalizado primero
+            this.themeApplier.apply();
+            
             const config = await this.configLoader.load();
             this.render(config);
         } catch (error) {

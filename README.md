@@ -15,21 +15,31 @@ Un sitio web simple y moderno para imprenta, construido con HTML, CSS y JavaScri
 ```
 webIrlanda/
 ├── index.html              # Página principal
+├── dashboard.html          # Panel de administración (gestión de colores y fondos)
 ├── config.json             # Archivo de configuración (EDITA ESTE PARA ACTUALIZAR)
 ├── css/
-│   └── style.css          # Estilos principales
+│   ├── style.css          # Estilos principales
+│   └── dashboard.css      # Estilos del dashboard
 ├── js/
 │   ├── main.js            # Aplicación principal
 │   ├── config-loader.js   # Cargador de configuración
-│   └── renderers/
-│       ├── header-renderer.js
-│       ├── servicios-renderer.js
-│       ├── contacto-renderer.js
-│       └── footer-renderer.js
+│   ├── theme-applier.js   # Aplicador de temas personalizados
+│   ├── renderers/
+│   │   ├── header-renderer.js
+│   │   ├── servicios-renderer.js
+│   │   ├── contacto-renderer.js
+│   │   └── footer-renderer.js
+│   └── dashboard/
+│       ├── dashboard-app.js       # Aplicación del dashboard
+│       ├── theme-manager.js       # Gestor de temas
+│       ├── background-manager.js  # Gestor de fondos
+│       └── config-storage.js      # Almacenamiento de configuraciones
 └── README.md
 ```
 
 ## 🎯 Cómo Actualizar la Información
+
+### Actualizar Contenido (config.json)
 
 Para actualizar la información de tu imprenta, simplemente edita el archivo **`config.json`**:
 
@@ -37,6 +47,16 @@ Para actualizar la información de tu imprenta, simplemente edita el archivo **`
 2. Modifica los datos que necesites (nombre, teléfono, email, servicios, etc.)
 3. Guarda el archivo
 4. Recarga la página en tu navegador
+
+### Personalizar Colores y Fondos (Dashboard)
+
+Usa el **Dashboard de Gestión** para personalizar colores y fondos sin tocar código:
+
+1. Abre `dashboard.html` en tu navegador
+2. Ajusta los colores usando los selectores de color
+3. Configura el fondo del hero (gradiente, sólido o imagen)
+4. Los cambios se guardan automáticamente en el navegador
+5. Recarga `index.html` para ver los cambios aplicados
 
 ### Ejemplo de edición:
 
@@ -79,8 +99,11 @@ npx http-server
 
 ## 📝 Personalización
 
-### Colores
-Puedes cambiar los colores editando las variables CSS en `css/style.css`:
+### Colores y Fondos (Recomendado: Dashboard)
+Usa el **dashboard.html** para personalizar colores y fondos de forma visual y fácil. Los cambios se guardan automáticamente en el navegador.
+
+### Colores (Edición Manual)
+Si prefieres editar manualmente, puedes cambiar los colores editando las variables CSS en `css/style.css`:
 
 ```css
 :root {
@@ -90,6 +113,8 @@ Puedes cambiar los colores editando las variables CSS en `css/style.css`:
     ...
 }
 ```
+
+**Nota:** Los cambios desde el dashboard tienen prioridad sobre los valores por defecto del CSS.
 
 ### Servicios
 Agrega o elimina servicios editando el array `servicios` en `config.json`:
