@@ -1,0 +1,321 @@
+/**
+ * Estilos principales para la página web de la imprenta
+ * Diseño moderno, limpio y responsivo
+ */
+
+/* Variables CSS para fácil personalización */
+:root {
+    --color-primary: #2563eb;
+    --color-secondary: #1e40af;
+    --color-accent: #f59e0b;
+    --color-text: #1f2937;
+    --color-text-light: #6b7280;
+    --color-background: #ffffff;
+    --color-background-light: #f9fafb;
+    --color-border: #e5e7eb;
+    --spacing-unit: 1rem;
+    --max-width: 1200px;
+    --border-radius: 8px;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Reset y estilos base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--color-text);
+    background-color: var(--color-background);
+}
+
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 calc(var(--spacing-unit) * 1.5);
+}
+
+/* Header */
+header {
+    background-color: var(--color-background);
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: calc(var(--spacing-unit) * 1.5) 0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-unit);
+}
+
+.logo {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0;
+}
+
+.header-nav {
+    display: flex;
+    gap: calc(var(--spacing-unit) * 2);
+}
+
+.header-nav a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.header-nav a:hover {
+    color: var(--color-primary);
+}
+
+/* Hero Section */
+#hero {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    color: white;
+    padding: calc(var(--spacing-unit) * 6) 0;
+    text-align: center;
+}
+
+#hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: calc(var(--spacing-unit) * 1.5);
+}
+
+#hero p {
+    font-size: 1.25rem;
+    opacity: 0.95;
+}
+
+/* Servicios Section */
+#servicios {
+    padding: calc(var(--spacing-unit) * 6) 0;
+}
+
+#servicios h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: calc(var(--spacing-unit) * 4);
+    color: var(--color-text);
+}
+
+.servicios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: calc(var(--spacing-unit) * 2);
+}
+
+.servicio-card {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: calc(var(--spacing-unit) * 2);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: var(--shadow);
+}
+
+.servicio-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.servicio-icono {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-unit);
+}
+
+.servicio-card h3 {
+    color: var(--color-primary);
+    margin-bottom: calc(var(--spacing-unit) * 0.75);
+    font-size: 1.5rem;
+}
+
+.servicio-card p {
+    color: var(--color-text-light);
+    line-height: 1.6;
+}
+
+/* Contacto Section */
+#contacto {
+    background-color: var(--color-background-light);
+    padding: calc(var(--spacing-unit) * 6) 0;
+}
+
+#contacto h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: calc(var(--spacing-unit) * 4);
+    color: var(--color-text);
+}
+
+.contacto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: calc(var(--spacing-unit) * 2);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.contacto-item {
+    background: var(--color-background);
+    padding: calc(var(--spacing-unit) * 2);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.contacto-item strong {
+    display: block;
+    color: var(--color-primary);
+    margin-bottom: calc(var(--spacing-unit) * 0.5);
+    font-size: 1.1rem;
+}
+
+.contacto-item a {
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.contacto-item a:hover {
+    color: var(--color-primary);
+}
+
+.contacto-item p {
+    color: var(--color-text-light);
+    margin: 0;
+}
+
+.telefono-link {
+    color: #25D366 !important;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 0.5);
+}
+
+.telefono-link:hover {
+    color: #128C7E !important;
+}
+
+.whatsapp-icon {
+    display: inline-block;
+}
+
+/* Footer */
+footer {
+    background-color: var(--color-text);
+    color: white;
+    padding: calc(var(--spacing-unit) * 4) 0 calc(var(--spacing-unit) * 2);
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: calc(var(--spacing-unit) * 3);
+    margin-bottom: calc(var(--spacing-unit) * 3);
+}
+
+.footer-section h3 {
+    margin-bottom: calc(var(--spacing-unit) * 1);
+    color: var(--color-accent);
+}
+
+.footer-section p {
+    margin-bottom: calc(var(--spacing-unit) * 0.5);
+    opacity: 0.9;
+}
+
+.footer-telefono-link {
+    color: white;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 0.5);
+    transition: color 0.3s ease;
+    opacity: 0.9;
+}
+
+.footer-telefono-link:hover {
+    color: #25D366;
+    opacity: 1;
+}
+
+.redes-sociales {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-unit) * 0.5);
+}
+
+.redes-sociales a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.redes-sociales a:hover {
+    color: var(--color-accent);
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: calc(var(--spacing-unit) * 2);
+    text-align: center;
+    opacity: 0.8;
+}
+
+/* Error Message */
+.error-message {
+    background-color: #fee;
+    color: #c33;
+    padding: calc(var(--spacing-unit) * 2);
+    border-radius: var(--border-radius);
+    text-align: center;
+    margin: calc(var(--spacing-unit) * 4);
+    border: 1px solid #fcc;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #hero h1 {
+        font-size: 2rem;
+    }
+
+    #hero p {
+        font-size: 1rem;
+    }
+
+    #servicios h2,
+    #contacto h2 {
+        font-size: 2rem;
+    }
+
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-nav {
+        width: 100%;
+        flex-direction: column;
+        gap: var(--spacing-unit);
+    }
+
+    .servicios-grid {
+        grid-template-columns: 1fr;
+    }
+}
+

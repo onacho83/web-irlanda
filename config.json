@@ -1,0 +1,36 @@
+{
+  "empresa": {
+    "nombre": "Imprenta Irlanda",
+    "telefono": "11 4951 6535",
+    "email": "info@imprentairlanda.com",
+    "direccion": "Hipólito Yrigoyen 2087, CABA",
+    "horario": "Lunes a Viernes: 8:30 - 19:00, Sábados: 10:00 - 13:00"
+  },
+  "servicios": [
+    {
+      "titulo": "Impresión Digital",
+      "descripcion": "Impresión de alta calidad para todo tipo de documentos",
+      "icono": "🖨️"
+    },
+    {
+      "titulo": "Diseño Gráfico",
+      "descripcion": "Creación de diseños personalizados para tu negocio",
+      "icono": "🎨"
+    },
+    {
+      "titulo": "Encuadernación",
+      "descripcion": "Servicios profesionales de encuadernación y acabados",
+      "icono": "📚"
+    },
+    {
+      "titulo": "Papelería",
+      "descripcion": "Tarjetas de visita, flyers, folletos y más",
+      "icono": "📄"
+    }
+  ],
+  "redesSociales": {
+    "facebook": "https://www.facebook.com/imprentairlanda",
+    "instagram": "https://instagram.com/imprentairlandaok"
+  }
+}
+
