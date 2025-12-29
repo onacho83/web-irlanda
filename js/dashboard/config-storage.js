@@ -46,8 +46,6 @@ class ConfigStorage {
                 primary: '#2563eb',
                 secondary: '#1e40af',
                 accent: '#f59e0b',
-                text: '#1f2937',
-                textLight: '#6b7280',
                 background: '#ffffff',
                 backgroundLight: '#f9fafb',
                 border: '#e5e7eb'
@@ -56,6 +54,13 @@ class ConfigStorage {
                 type: 'gradient',
                 backgroundColor: '#2563eb',
                 backgroundImage: ''
+            },
+            sections: {
+                header: {},
+                hero: {},
+                servicios: {},
+                contacto: {},
+                footer: {}
             }
         };
     }

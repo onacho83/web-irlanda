@@ -50,27 +50,6 @@
             </section>
 
             <section class="dashboard-section">
-                <h2>📝 Colores de Texto</h2>
-                <div class="controls-grid">
-                    <div class="control-group">
-                        <label for="color-text">Color de Texto Principal</label>
-                        <div class="color-input-wrapper">
-                            <input type="color" id="color-text" value="#1f2937">
-                            <input type="text" id="color-text-text" value="#1f2937" class="color-text-input">
-                        </div>
-                    </div>
-
-                    <div class="control-group">
-                        <label for="color-text-light">Color de Texto Secundario</label>
-                        <div class="color-input-wrapper">
-                            <input type="color" id="color-text-light" value="#6b7280">
-                            <input type="text" id="color-text-light-text" value="#6b7280" class="color-text-input">
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="dashboard-section">
                 <h2>🎭 Fondos</h2>
                 <div class="controls-grid">
                     <div class="control-group">
@@ -118,6 +97,72 @@
             </section>
 
             <section class="dashboard-section">
+                <h2>🎨 Estilos por Sección</h2>
+                <div class="section-tabs">
+                    <button class="tab-btn active" data-section="header">Header</button>
+                    <button class="tab-btn" data-section="hero">Hero</button>
+                    <button class="tab-btn" data-section="servicios">Servicios</button>
+                    <button class="tab-btn" data-section="contacto">Contacto</button>
+                    <button class="tab-btn" data-section="footer">Footer</button>
+                </div>
+
+                <div id="section-styles-container">
+                    <!-- Los controles se cargarán dinámicamente según la sección seleccionada -->
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>🏢 Datos de la Empresa</h2>
+                <div class="controls-grid">
+                    <div class="control-group">
+                        <label for="empresa-nombre">Nombre de la Empresa</label>
+                        <input type="text" id="empresa-nombre" class="text-input" placeholder="Nombre de la empresa">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="empresa-telefono">Teléfono</label>
+                        <input type="text" id="empresa-telefono" class="text-input" placeholder="11 4951 6535">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="empresa-email">Email</label>
+                        <input type="email" id="empresa-email" class="text-input" placeholder="info@empresa.com">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="empresa-direccion">Dirección</label>
+                        <input type="text" id="empresa-direccion" class="text-input" placeholder="Dirección completa">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="empresa-horario">Horario</label>
+                        <input type="text" id="empresa-horario" class="text-input" placeholder="Lunes a Viernes: 9:00 - 18:00">
+                    </div>
+                </div>
+                <div class="section-actions">
+                    <button id="save-empresa-btn" class="btn btn-primary">Guardar Datos de Empresa</button>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>👋 Mensaje de Bienvenida</h2>
+                <div class="controls-grid">
+                    <div class="control-group">
+                        <label for="welcome-titulo">Título</label>
+                        <input type="text" id="welcome-titulo" class="text-input" placeholder="Bienvenido a Nuestra Imprenta">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="welcome-subtitulo">Subtítulo</label>
+                        <input type="text" id="welcome-subtitulo" class="text-input" placeholder="Servicios de impresión de calidad profesional">
+                    </div>
+                </div>
+                <div class="section-actions">
+                    <button id="save-welcome-btn" class="btn btn-primary">Guardar Mensaje</button>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
                 <h2>📊 Vista Previa</h2>
                 <div class="preview-container">
                     <iframe id="preview-frame" src="index.html" frameborder="0"></iframe>
@@ -136,6 +181,8 @@
     <script type="module" src="js/dashboard/config-storage.js"></script>
     <script type="module" src="js/dashboard/theme-manager.js"></script>
     <script type="module" src="js/dashboard/background-manager.js"></script>
+    <script type="module" src="js/dashboard/section-style-manager.js"></script>
+    <script type="module" src="js/dashboard/content-manager.js"></script>
     <script type="module" src="js/dashboard/dashboard-app.js"></script>
 </body>
 </html>

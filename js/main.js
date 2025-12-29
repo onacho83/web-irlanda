@@ -51,6 +51,12 @@ class App {
         this.serviciosRenderer.render(config);
         this.contactoRenderer.render(config);
         this.footerRenderer.render(config);
+        
+        // Aplicar estilos de secciones después del renderizado
+        // Usar setTimeout para asegurar que el DOM esté completamente actualizado
+        setTimeout(() => {
+            this.themeApplier.applySectionStyles();
+        }, 100);
     }
 
     /**

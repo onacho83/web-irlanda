@@ -28,12 +28,11 @@ class ThemeManager {
         const colors = this.config.colors || {};
 
         // Mapeo de nombres de configuración a variables CSS
+        // Nota: text y textLight se eliminaron - cada sección gestiona su propio color
         const colorMap = {
             primary: '--color-primary',
             secondary: '--color-secondary',
             accent: '--color-accent',
-            text: '--color-text',
-            textLight: '--color-text-light',
             background: '--color-background',
             backgroundLight: '--color-background-light',
             border: '--color-border'

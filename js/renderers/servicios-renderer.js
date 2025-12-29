@@ -18,9 +18,41 @@ class ServiciosRenderer {
             return;
         }
 
-        // Actualizar hero con nombre de la empresa
-        if (this.heroTitleElement && config.empresa) {
-            this.heroTitleElement.textContent = `Bienvenido a ${config.empresa.nombre}`;
+        // Actualizar hero con mensaje de bienvenida personalizado o por defecto
+        if (this.heroTitleElement) {
+            // Intentar cargar mensaje personalizado desde localStorage
+            try {
+                const stored = localStorage.getItem('imprenta-content-config');
+                if (stored) {
+                    const content = JSON.parse(stored);
+                    if (content.welcome && content.welcome.titulo) {
+                        this.heroTitleElement.textContent = content.welcome.titulo;
+                    } else if (config.empresa) {
+                        this.heroTitleElement.textContent = `Bienvenido a ${config.empresa.nombre}`;
+                    }
+                } else if (config.empresa) {
+                    this.heroTitleElement.textContent = `Bienvenido a ${config.empresa.nombre}`;
+                }
+            } catch (e) {
+                if (config.empresa) {
+                    this.heroTitleElement.textContent = `Bienvenido a ${config.empresa.nombre}`;
+                }
+            }
+        }
+
+        // Actualizar subtítulo
+        if (this.heroSubtitleElement) {
+            try {
+                const stored = localStorage.getItem('imprenta-content-config');
+                if (stored) {
+                    const content = JSON.parse(stored);
+                    if (content.welcome && content.welcome.subtitulo) {
+                        this.heroSubtitleElement.textContent = content.welcome.subtitulo;
+                    }
+                }
+            } catch (e) {
+                // Usar valor por defecto si hay error
+            }
         }
 
         // Renderizar servicios
