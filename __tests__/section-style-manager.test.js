@@ -16,7 +16,8 @@ describe('SectionStyleManager', () => {
     const sec = document.getElementById('testsec');
     expect(sec.style.backgroundColor).toBe('rgb(170, 187, 204)');
     const h2 = sec.querySelector('h2');
-    expect(h2.style.color).toBe('rgb(51, 34, 34)');
+    // '#321' -> '#332211' -> rgb(51, 34, 17)
+    expect(h2.style.color).toBe('rgb(51, 34, 17)');
   });
 
   test('updateSectionStyle modifies config and saves', () => {
