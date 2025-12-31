@@ -150,13 +150,14 @@ class ThemeApplier {
                 }
                 break;
             case 'gradient':
-            default:
+            default: {
                 const primary = getComputedStyle(document.documentElement)
                     .getPropertyValue('--color-primary').trim() || '#2563eb';
                 const secondary = getComputedStyle(document.documentElement)
                     .getPropertyValue('--color-secondary').trim() || '#1e40af';
                 heroSection.style.background = `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`;
                 break;
+            }
         }
     }
 }

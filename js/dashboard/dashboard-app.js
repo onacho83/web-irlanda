@@ -114,7 +114,11 @@ class DashboardApp {
             refreshPreviewBtn.addEventListener('click', () => {
                 const iframe = document.getElementById('preview-frame');
                 if (iframe) {
-                    iframe.src = iframe.src; // Recargar iframe
+                    if (iframe.contentWindow && iframe.contentWindow.location && typeof iframe.contentWindow.location.reload === 'function') {
+                        iframe.contentWindow.location.reload();
+                    } else {
+                        iframe.setAttribute('src', iframe.src);
+                    }
                     setTimeout(() => {
                         this.backgroundManager.applyToPreview();
                         this.sectionStyleManager.applySectionStyles();
@@ -512,7 +516,11 @@ class DashboardApp {
         // Recargar la vista previa para aplicar cambios de contenido
         const iframe = document.getElementById('preview-frame');
         if (iframe) {
-            iframe.src = iframe.src;
+            if (iframe.contentWindow && iframe.contentWindow.location && typeof iframe.contentWindow.location.reload === 'function') {
+                iframe.contentWindow.location.reload();
+            } else {
+                iframe.setAttribute('src', iframe.src);
+            }
             setTimeout(() => {
                 // Reaplicar estilos por si hay cambios que dependan del contenido
                 this.backgroundManager.applyToPreview && this.backgroundManager.applyToPreview();
@@ -660,7 +668,11 @@ class DashboardApp {
     refreshPreview() {
         const iframe = document.getElementById('preview-frame');
         if (iframe) {
-            iframe.src = iframe.src;
+            if (iframe.contentWindow && iframe.contentWindow.location && typeof iframe.contentWindow.location.reload === 'function') {
+                iframe.contentWindow.location.reload();
+            } else {
+                iframe.setAttribute('src', iframe.src);
+            }
             setTimeout(() => {
                 this.sectionStyleManager.applySectionStyles();
             }, 500);

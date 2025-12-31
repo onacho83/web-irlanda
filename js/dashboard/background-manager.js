@@ -52,11 +52,12 @@ class BackgroundManager {
                 }
                 break;
             case 'gradient':
-            default:
+            default: {
                 const primary = this.themeManager.getColor('primary') || '#2563eb';
                 const secondary = this.themeManager.getColor('secondary') || '#1e40af';
                 heroElement.style.background = `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`;
                 break;
+            }
         }
     }
 

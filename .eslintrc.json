@@ -13,5 +13,11 @@
     "no-unused-vars": ["warn"],
     "no-console": "off",
     "complexity": ["warn", { "max": 10 }]
-  }
-}
+  },
+  "overrides": [
+    {
+      "files": ["**/__tests__/**"],
+      "env": { "jest": true }
+    }
+  ]
+} 
