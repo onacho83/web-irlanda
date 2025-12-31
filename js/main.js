@@ -4,7 +4,9 @@
  */
 import ConfigLoader from './config-loader.js';
 import ThemeApplier from './theme-applier.js';
+import StorageService from './services/storage-service.js';
 import HeaderRenderer from './renderers/header-renderer.js';
+import PresentacionRenderer from './renderers/presentacion-renderer.js';
 import ServiciosRenderer from './renderers/servicios-renderer.js';
 import ContactoRenderer from './renderers/contacto-renderer.js';
 import FooterRenderer from './renderers/footer-renderer.js';
@@ -13,6 +15,7 @@ class App {
     constructor() {
         this.configLoader = new ConfigLoader();
         this.themeApplier = new ThemeApplier();
+        this.storageService = new StorageService();
         this.initializeRenderers();
     }
 
@@ -21,6 +24,7 @@ class App {
      */
     initializeRenderers() {
         this.headerRenderer = new HeaderRenderer();
+        this.presentacionRenderer = new PresentacionRenderer();
         this.serviciosRenderer = new ServiciosRenderer();
         this.contactoRenderer = new ContactoRenderer();
         this.footerRenderer = new FooterRenderer();
@@ -35,7 +39,31 @@ class App {
             this.themeApplier.apply();
             
             const config = await this.configLoader.load();
-            this.render(config);
+
+            // Aplicar overrides guardados desde el dashboard (storage)
+            try {
+                const storedContent = this.storageService.get('imprenta-content-config') || {};
+                const mergedConfig = Object.assign({}, config);
+
+                // Merge presentacion
+                if (storedContent.presentacion) {
+                    mergedConfig.presentacion = Object.assign({}, config.presentacion || {}, storedContent.presentacion);
+                }
+
+                // Merge servicios
+                if (Array.isArray(storedContent.servicios)) {
+                    mergedConfig.servicios = storedContent.servicios;
+                }
+
+                // Merge welcome
+                if (storedContent.welcome) {
+                    mergedConfig.welcome = Object.assign({}, config.welcome || {}, storedContent.welcome);
+                }
+
+                this.render(mergedConfig);
+            } catch (e) {
+                this.render(config);
+            }
         } catch (error) {
             console.error('Error inicializando aplicación:', error);
             this.showError('Error cargando la configuración. Por favor, verifica el archivo config.json');
@@ -48,6 +76,7 @@ class App {
      */
     render(config) {
         this.headerRenderer.render(config);
+        this.presentacionRenderer.render(config);
         this.serviciosRenderer.render(config);
         this.contactoRenderer.render(config);
         this.footerRenderer.render(config);

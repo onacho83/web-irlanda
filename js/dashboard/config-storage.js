@@ -3,19 +3,21 @@
  * Principio SOLID: Single Responsibility - Solo se encarga del almacenamiento
  * Principio SOLID: Dependency Inversion - Proporciona una interfaz para el almacenamiento
  */
+import StorageService from '../services/storage-service.js';
+
 class ConfigStorage {
-    constructor() {
+    constructor(storageService = null) {
         this.storageKey = 'imprenta-theme-config';
+        this.storage = storageService || new StorageService();
     }
 
     /**
-     * Guarda la configuración en localStorage
+     * Guarda la configuración usando StorageService
      * @param {Object} config - Configuración a guardar
      */
     save(config) {
         try {
-            localStorage.setItem(this.storageKey, JSON.stringify(config));
-            return true;
+            return this.storage.set(this.storageKey, config);
         } catch (error) {
             console.error('Error guardando configuración:', error);
             return false;
@@ -23,13 +25,12 @@ class ConfigStorage {
     }
 
     /**
-     * Carga la configuración desde localStorage
+     * Carga la configuración usando StorageService
      * @returns {Object|null} Configuración cargada o null si no existe
      */
     load() {
         try {
-            const stored = localStorage.getItem(this.storageKey);
-            return stored ? JSON.parse(stored) : null;
+            return this.storage.get(this.storageKey);
         } catch (error) {
             console.error('Error cargando configuración:', error);
             return null;
@@ -69,7 +70,11 @@ class ConfigStorage {
      * Restablece la configuración a los valores por defecto
      */
     reset() {
-        localStorage.removeItem(this.storageKey);
+        try {
+            this.storage.remove(this.storageKey);
+        } catch (e) {
+            // ignore
+        }
         return this.getDefaults();
     }
 }

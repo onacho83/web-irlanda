@@ -2,10 +2,13 @@
  * ContentManager - Gestor de contenido (datos de empresa, mensaje de bienvenida)
  * Principio SOLID: Single Responsibility - Solo gestiona contenido
  */
+import StorageService from '../services/storage-service.js';
+
 class ContentManager {
-    constructor(configStorage) {
+    constructor(configStorage, storageService = null) {
         this.configStorage = configStorage;
         this.configPath = 'config.json';
+        this.storage = storageService || new StorageService();
     }
 
     /**
@@ -31,8 +34,7 @@ class ContentManager {
      */
     saveContentToStorage(content) {
         try {
-            localStorage.setItem('imprenta-content-config', JSON.stringify(content));
-            return true;
+            return this.storage.set('imprenta-content-config', content);
         } catch (error) {
             console.error('Error guardando contenido:', error);
             return false;
@@ -45,8 +47,7 @@ class ContentManager {
      */
     loadContentFromStorage() {
         try {
-            const stored = localStorage.getItem('imprenta-content-config');
-            return stored ? JSON.parse(stored) : null;
+            return this.storage.get('imprenta-content-config');
         } catch (error) {
             console.error('Error cargando contenido:', error);
             return null;
@@ -99,6 +100,77 @@ class ContentManager {
     getWelcomeMessage() {
         const content = this.loadContentFromStorage();
         return content?.welcome || { titulo: '', subtitulo: '' };
+    }
+
+    /**
+     * Actualiza los datos de la sección presentación
+     * @param {Object} presentacionData - { titulo, texto, lead, imagen, ctaText, ctaLink }
+     */
+    updatePresentacion(presentacionData) {
+        const content = this.loadContentFromStorage() || {};
+        if (!content.presentacion) content.presentacion = {};
+        Object.assign(content.presentacion, presentacionData);
+        this.saveContentToStorage(content);
+        return content;
+    }
+
+    /**
+     * Obtiene los datos de la sección presentación
+     * @returns {Object} presentacion data
+     */
+    getPresentacionData() {
+        const content = this.loadContentFromStorage();
+        return content?.presentacion || { titulo: '', texto: '', lead: '', imagen: '', ctaText: '', ctaLink: '' };
+    }
+
+    /**
+     * Obtiene la lista de servicios
+     * @returns {Array} servicios
+     */
+    getServicios() {
+        const content = this.loadContentFromStorage();
+        return content?.servicios || [];
+    }
+
+    /**
+     * Añade un nuevo servicio
+     * @param {Object} servicio
+     */
+    addServicio(servicio) {
+        const content = this.loadContentFromStorage() || {};
+        if (!content.servicios) content.servicios = [];
+        content.servicios.push(servicio);
+        this.saveContentToStorage(content);
+        return content;
+    }
+
+    /**
+     * Actualiza un servicio por índice
+     * @param {number} index
+     * @param {Object} servicio
+     */
+    updateServicio(index, servicio) {
+        const content = this.loadContentFromStorage() || {};
+        if (!content.servicios) content.servicios = [];
+        if (typeof index === 'number' && content.servicios[index]) {
+            content.servicios[index] = servicio;
+            this.saveContentToStorage(content);
+        }
+        return content;
+    }
+
+    /**
+     * Elimina un servicio por índice
+     * @param {number} index
+     */
+    deleteServicio(index) {
+        const content = this.loadContentFromStorage() || {};
+        if (!content.servicios) content.servicios = [];
+        if (typeof index === 'number' && content.servicios[index]) {
+            content.servicios.splice(index, 1);
+            this.saveContentToStorage(content);
+        }
+        return content;
     }
 
     /**

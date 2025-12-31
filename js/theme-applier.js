@@ -2,9 +2,12 @@
  * ThemeApplier - Aplica el tema personalizado desde localStorage
  * Principio SOLID: Single Responsibility - Solo aplica temas
  */
+import StorageService from './services/storage-service.js';
+
 class ThemeApplier {
-    constructor() {
+    constructor(storageService = null) {
         this.storageKey = 'imprenta-theme-config';
+        this.storage = storageService || new StorageService();
     }
 
     /**
@@ -12,10 +15,10 @@ class ThemeApplier {
      */
     apply() {
         try {
-            const stored = localStorage.getItem(this.storageKey);
+            const stored = this.storage.get(this.storageKey);
             if (!stored) return;
 
-            const config = JSON.parse(stored);
+            const config = stored;
             const root = document.documentElement;
             const colors = config.colors || {};
 
@@ -51,10 +54,10 @@ class ThemeApplier {
      */
     applySectionStyles() {
         try {
-            const stored = localStorage.getItem(this.storageKey);
+            const stored = this.storage.get(this.storageKey);
             if (!stored) return;
 
-            const config = JSON.parse(stored);
+            const config = stored;
             this.applySectionStylesFromConfig(config.sections);
         } catch (error) {
             console.error('Error aplicando estilos de secciones:', error);
@@ -112,8 +115,8 @@ class ThemeApplier {
             if (styles.backgroundImage) {
                 section.style.backgroundImage = `url('${styles.backgroundImage}')`;
                 section.style.backgroundSize = 'cover';
-                section.style.backgroundPosition = 'center';
-            }
+                section.style.backgroundPosition = 'center';            } else {
+                section.style.backgroundImage = '';            }
         });
     }
 
