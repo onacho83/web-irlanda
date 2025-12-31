@@ -100,6 +100,66 @@ header {
     opacity: 0.95;
 }
 
+/* Presentación Section */
+#presentacion {
+    padding: calc(var(--spacing-unit) * 6) 0;
+    background-color: var(--color-background-light);
+}
+
+#presentacion h2 {
+    font-size: 2.25rem;
+    margin-bottom: calc(var(--spacing-unit) * 1);
+    color: var(--color-text);
+    text-align: left;
+}
+
+.presentacion-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: calc(var(--spacing-unit) * 3);
+    align-items: center;
+}
+
+.presentacion-text p {
+    color: var(--color-text-light);
+    margin-bottom: calc(var(--spacing-unit) * 1);
+    line-height: 1.6;
+}
+
+.presentacion-image img {
+    width: 100%;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    object-fit: cover;
+}
+
+.btn {
+    display: inline-block;
+    padding: calc(var(--spacing-unit) * 0.65) calc(var(--spacing-unit) * 1.25);
+    border-radius: calc(var(--border-radius) / 2);
+    text-decoration: none;
+    color: white;
+    background: var(--color-primary);
+    transition: background 0.25s ease, transform 0.15s ease;
+}
+
+.btn:hover {
+    background: var(--color-secondary);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .presentacion-grid {
+        grid-template-columns: 1fr;
+    }
+    .presentacion-text {
+        text-align: center;
+    }
+    #presentacion h2 {
+        text-align: center;
+    }
+}
+
 /* Servicios Section */
 #servicios {
     padding: calc(var(--spacing-unit) * 6) 0;
@@ -212,7 +272,13 @@ header {
 }
 
 .whatsapp-icon {
+    /* Preferir la fuente de marcas de Font Awesome para el icono */
+    font-family: "Font Awesome 5 Brands", "Font Awesome 5 Free", Arial, sans-serif;
+    font-size: 24px;
+    color: #25d366; /* Verde de WhatsApp */
     display: inline-block;
+    line-height: 1;
+    vertical-align: middle;
 }
 
 /* Footer */

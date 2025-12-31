@@ -2,9 +2,11 @@
  * ServiciosRenderer - Renderiza la sección de servicios
  * Principio SOLID: Single Responsibility - Solo se encarga de renderizar los servicios
  */
-class ServiciosRenderer {
+import BaseRenderer from './base-renderer.js';
+
+class ServiciosRenderer extends BaseRenderer {
     constructor() {
-        this.containerElement = document.getElementById('servicios-container');
+        super('servicios-container');
         this.heroTitleElement = document.getElementById('hero-title');
         this.heroSubtitleElement = document.getElementById('hero-subtitle');
     }
@@ -14,52 +16,29 @@ class ServiciosRenderer {
      * @param {Object} config - Configuración completa de la aplicación
      */
     render(config) {
-        if (!config.servicios || !Array.isArray(config.servicios)) {
-            return;
-        }
-
+        // Usar únicamente la configuración pasada (no acceder a localStorage desde el renderer)
+        const servicios = config.servicios || [];
         // Actualizar hero con mensaje de bienvenida personalizado o por defecto
         if (this.heroTitleElement) {
-            // Intentar cargar mensaje personalizado desde localStorage
-            try {
-                const stored = localStorage.getItem('imprenta-content-config');
-                if (stored) {
-                    const content = JSON.parse(stored);
-                    if (content.welcome && content.welcome.titulo) {
-                        this.heroTitleElement.textContent = content.welcome.titulo;
-                    } else if (config.empresa) {
-                        this.heroTitleElement.textContent = `Bienvenido a ${config.empresa.nombre}`;
-                    }
-                } else if (config.empresa) {
-                    this.heroTitleElement.textContent = `Bienvenido a ${config.empresa.nombre}`;
-                }
-            } catch (e) {
-                if (config.empresa) {
-                    this.heroTitleElement.textContent = `Bienvenido a ${config.empresa.nombre}`;
-                }
+            const welcome = config.welcome || {};
+            if (welcome.titulo) {
+                this.heroTitleElement.textContent = welcome.titulo;
+            } else if (config.empresa) {
+                this.heroTitleElement.textContent = `Bienvenido a ${config.empresa.nombre}`;
             }
         }
 
         // Actualizar subtítulo
         if (this.heroSubtitleElement) {
-            try {
-                const stored = localStorage.getItem('imprenta-content-config');
-                if (stored) {
-                    const content = JSON.parse(stored);
-                    if (content.welcome && content.welcome.subtitulo) {
-                        this.heroSubtitleElement.textContent = content.welcome.subtitulo;
-                    }
-                }
-            } catch (e) {
-                // Usar valor por defecto si hay error
+            const welcome = config.welcome || {};
+            if (welcome.subtitulo) {
+                this.heroSubtitleElement.textContent = welcome.subtitulo;
             }
         }
 
         // Renderizar servicios
-        if (this.containerElement) {
-            this.containerElement.innerHTML = config.servicios
-                .map(servicio => this.createServicioCard(servicio))
-                .join('');
+        if (this.root) {
+            this.setHTML(servicios.map(servicio => this.createServicioCard(servicio)).join(''));
         }
     }
 

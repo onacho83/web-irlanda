@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Gestión de Imprenta</title>
+    <!-- Font Awesome (icons for dashboard / preview) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
@@ -101,6 +103,7 @@
                 <div class="section-tabs">
                     <button class="tab-btn active" data-section="header">Header</button>
                     <button class="tab-btn" data-section="hero">Hero</button>
+                    <button class="tab-btn" data-section="presentacion">Presentación</button>
                     <button class="tab-btn" data-section="servicios">Servicios</button>
                     <button class="tab-btn" data-section="contacto">Contacto</button>
                     <button class="tab-btn" data-section="footer">Footer</button>
@@ -108,6 +111,37 @@
 
                 <div id="section-styles-container">
                     <!-- Los controles se cargarán dinámicamente según la sección seleccionada -->
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>🛠️ Servicios (CRUD)</h2>
+                <div class="controls-grid">
+                    <div class="control-group" style="grid-column: 1 / -1;">
+                        <label>Lista de Servicios</label>
+                        <div id="servicios-list" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+                        <div style="margin-top: 0.75rem;">
+                            <button id="add-servicio-btn" class="btn btn-primary">Agregar Servicio</button>
+                        </div>
+                    </div>
+
+                    <div class="control-group" style="grid-column: 1 / -1;" id="servicio-form" hidden>
+                        <label for="servicio-titulo">Título del Servicio</label>
+                        <input type="text" id="servicio-titulo" class="text-input" placeholder="Impresión Digital">
+
+                        <label for="servicio-descripcion">Descripción</label>
+                        <textarea id="servicio-descripcion" class="text-input" rows="4" placeholder="Descripción del servicio"></textarea>
+
+                        <label for="servicio-icono">Icono (emoji o texto corto)</label>
+                        <input type="text" id="servicio-icono" class="text-input" placeholder="📄">
+
+                        <input type="hidden" id="servicio-index" value="-1">
+
+                        <div style="margin-top: 0.75rem; display:flex; gap:0.5rem;">
+                            <button id="save-servicio-btn" class="btn btn-primary">Guardar Servicio</button>
+                            <button id="cancel-servicio-btn" class="btn btn-secondary">Cancelar</button>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -163,7 +197,45 @@
             </section>
 
             <section class="dashboard-section">
-                <h2>📊 Vista Previa</h2>
+                <h2>�️ Sección Presentación</h2>
+                <div class="controls-grid">
+                    <div class="control-group">
+                        <label for="presentacion-titulo">Título</label>
+                        <input type="text" id="presentacion-titulo" class="text-input" placeholder="Quiénes somos">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="presentacion-texto">Texto</label>
+                        <textarea id="presentacion-texto" class="text-input" rows="4" placeholder="Descripción breve de la imprenta"></textarea>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="presentacion-lead">Frase destacada (lead)</label>
+                        <input type="text" id="presentacion-lead" class="text-input" placeholder="Calidad, rapidez y responsabilidad ambiental">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="presentacion-imagen">URL de la Imagen</label>
+                        <input type="text" id="presentacion-imagen" class="text-input" placeholder="images/presentacion.jpg">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="presentacion-cta-text">Texto del Botón (CTA)</label>
+                        <input type="text" id="presentacion-cta-text" class="text-input" placeholder="Contacto">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="presentacion-cta-link">Enlace del Botón (ancla o URL)</label>
+                        <input type="text" id="presentacion-cta-link" class="text-input" placeholder="#contacto">
+                    </div>
+                </div>
+                <div class="section-actions">
+                    <button id="save-presentacion-btn" class="btn btn-primary">Guardar Presentación</button>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>�📊 Vista Previa</h2>
                 <div class="preview-container">
                     <iframe id="preview-frame" src="index.html" frameborder="0"></iframe>
                 </div>

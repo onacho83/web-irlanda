@@ -31,7 +31,7 @@ class FooterRenderer {
                     </div>
                     <div class="footer-section">
                         <h3>Contacto</h3>
-                        ${empresa.telefono ? `<p><a href="${whatsappLink}" target="_blank" rel="noopener" class="footer-telefono-link" title="Abrir WhatsApp en el navegador"><span class="whatsapp-icon">💬</span> ${empresa.telefono}</a></p>` : ''}
+                        ${empresa.telefono ? `<p><a href="${whatsappLink}" target="_blank" rel="noopener" class="footer-telefono-link whatsapp-link" title="Abrir WhatsApp en el navegador"><i class="fab fa-whatsapp whatsapp-icon" aria-hidden="true"></i> ${empresa.telefono}</a></p>` : ''}
                         ${empresa.email ? `<p>${empresa.email}</p>` : ''}
                     </div>
                     ${redesHTML ? `

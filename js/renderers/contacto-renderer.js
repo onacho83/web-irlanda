@@ -23,8 +23,8 @@ class ContactoRenderer {
             <div class="contacto-grid">
                 <div class="contacto-item">
                     <strong>Teléfono:</strong>
-                    <a href="${whatsappLink}" target="_blank" rel="noopener" class="telefono-link" title="Abrir WhatsApp en el navegador">
-                        <span class="whatsapp-icon">💬</span> ${empresa.telefono}
+                    <a href="${whatsappLink}" target="_blank" rel="noopener" class="telefono-link whatsapp-link" title="Abrir WhatsApp en el navegador">
+                        <i class="fab fa-whatsapp whatsapp-icon" aria-hidden="true"></i> ${empresa.telefono}
                     </a>
                 </div>
                 <div class="contacto-item">

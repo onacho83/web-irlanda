@@ -7,17 +7,27 @@ import ThemeManager from './theme-manager.js';
 import BackgroundManager from './background-manager.js';
 import SectionStyleManager from './section-style-manager.js';
 import ContentManager from './content-manager.js';
+import StorageService from '../services/storage-service.js';
+import ServiciosController from './controllers/servicios-controller.js';
+import PresentacionController from './controllers/presentacion-controller.js';
 
 class DashboardApp {
     constructor() {
         this.configStorage = new ConfigStorage();
-        this.themeManager = new ThemeManager(this.configStorage);
+        // Inyectar StorageService para desacoplar dependencia de localStorage
+        this.storageService = new StorageService();
+
+        this.themeManager = new ThemeManager(this.configStorage, this.storageService);
         this.backgroundManager = new BackgroundManager(this.configStorage, this.themeManager);
         this.sectionStyleManager = new SectionStyleManager(this.configStorage, this.themeManager);
-        this.contentManager = new ContentManager(this.configStorage);
-        
+        this.contentManager = new ContentManager(this.configStorage, this.storageService);
+
+        // Controllers
+        this.serviciosController = new ServiciosController(this.contentManager, this.showNotification.bind(this), this.refreshPreview.bind(this));
+        this.presentacionController = new PresentacionController(this.contentManager, this.showNotification.bind(this), this.refreshPreview.bind(this));
+
         this.currentSection = 'header';
-        
+
         this.initializeControls();
         this.loadCurrentValues();
         this.loadContentValues();
@@ -140,6 +150,37 @@ class DashboardApp {
             });
         }
 
+        // Save presentacion button
+        const savePresentacionBtn = document.getElementById('save-presentacion-btn');
+        if (savePresentacionBtn) {
+            savePresentacionBtn.addEventListener('click', () => {
+                this.presentacionController.save();
+            });
+        }
+
+        // Servicios CRUD buttons
+        const addServicioBtn = document.getElementById('add-servicio-btn');
+        const saveServicioBtn = document.getElementById('save-servicio-btn');
+        const cancelServicioBtn = document.getElementById('cancel-servicio-btn');
+
+        if (addServicioBtn) {
+            addServicioBtn.addEventListener('click', () => {
+                this.serviciosController.showForm(-1);
+            });
+        }
+
+        if (saveServicioBtn) {
+            saveServicioBtn.addEventListener('click', () => {
+                this.serviciosController.save();
+            });
+        }
+
+        if (cancelServicioBtn) {
+            cancelServicioBtn.addEventListener('click', () => {
+                this.serviciosController.hideForm();
+            });
+        }
+
         // Initialize section controls
         this.renderSectionControls(this.currentSection);
     }
@@ -195,6 +236,7 @@ class DashboardApp {
         const sectionNames = {
             header: 'Header',
             hero: 'Hero',
+            presentacion: 'Presentación',
             servicios: 'Servicios',
             contacto: 'Contacto',
             footer: 'Footer'
@@ -204,6 +246,7 @@ class DashboardApp {
         const defaultTextColors = {
             header: '#1f2937',
             hero: '#ffffff',
+            presentacion: '#1f2937',
             servicios: '#1f2937',
             contacto: '#1f2937',
             footer: '#ffffff'
@@ -385,6 +428,12 @@ class DashboardApp {
             
             if (welcomeTitulo) welcomeTitulo.value = welcome.titulo || '';
             if (welcomeSubtitulo) welcomeSubtitulo.value = welcome.subtitulo || '';
+
+            // Cargar sección presentación
+            this.presentacionController.loadValues(content);
+
+            // Renderizar lista de servicios en el dashboard
+            this.serviciosController.renderList();
         } catch (error) {
             console.error('Error cargando contenido:', error);
             // Intentar cargar desde localStorage
@@ -409,6 +458,12 @@ class DashboardApp {
                 
                 if (welcomeTitulo) welcomeTitulo.value = welcome.titulo || '';
                 if (welcomeSubtitulo) welcomeSubtitulo.value = welcome.subtitulo || '';
+
+                // Cargar sección presentación desde almacenamiento local (fallback)
+                this.presentacionController.loadValues(stored || {});
+
+                // Renderizar lista de servicios en el dashboard (fallback)
+                this.serviciosController.renderList();
             }
         }
     }
@@ -438,6 +493,178 @@ class DashboardApp {
 
         this.contentManager.updateWelcomeMessage(titulo, subtitulo);
         this.showNotification('Mensaje de bienvenida guardado', 'success');
+    }
+
+    /**
+     * Guarda los datos de la sección Presentación
+     */
+    savePresentacion() {
+        const titulo = document.getElementById('presentacion-titulo').value;
+        const texto = document.getElementById('presentacion-texto').value;
+        const lead = document.getElementById('presentacion-lead').value;
+        const imagen = document.getElementById('presentacion-imagen').value;
+        const ctaText = document.getElementById('presentacion-cta-text').value;
+        const ctaLink = document.getElementById('presentacion-cta-link').value;
+
+        this.contentManager.updatePresentacion({ titulo, texto, lead, imagen, ctaText, ctaLink });
+        this.showNotification('Presentación guardada', 'success');
+
+        // Recargar la vista previa para aplicar cambios de contenido
+        const iframe = document.getElementById('preview-frame');
+        if (iframe) {
+            iframe.src = iframe.src;
+            setTimeout(() => {
+                // Reaplicar estilos por si hay cambios que dependan del contenido
+                this.backgroundManager.applyToPreview && this.backgroundManager.applyToPreview();
+                this.sectionStyleManager.applySectionStyles();
+            }, 500);
+        }
+    }
+
+    /**
+     * Renderiza la lista de servicios en el dashboard
+     */
+    renderServiciosList() {
+        const list = document.getElementById('servicios-list');
+        if (!list) return;
+        const servicios = this.contentManager.getServicios() || [];
+        list.innerHTML = '';
+
+        if (servicios.length === 0) {
+            list.innerHTML = '<div class="control-group">No hay servicios definidos.</div>';
+            return;
+        }
+
+        servicios.forEach((s, idx) => {
+            const item = document.createElement('div');
+            item.className = 'servicio-item';
+            item.style.display = 'flex';
+            item.style.justifyContent = 'space-between';
+            item.style.alignItems = 'center';
+            item.style.padding = '0.5rem';
+            item.style.border = '1px solid var(--dashboard-border)';
+            item.style.borderRadius = '8px';
+
+            item.innerHTML = `
+                <div style="display:flex; gap:0.75rem; align-items:center;">
+                    <div style="font-size:1.25rem;">${s.icono || '📄'}</div>
+                    <div>
+                        <strong>${s.titulo}</strong>
+                        <div style="color:var(--dashboard-text-light); font-size:0.9rem;">${s.descripcion}</div>
+                    </div>
+                </div>
+                <div style="display:flex; gap:0.5rem;">
+                    <button class="btn btn-small" data-action="edit" data-index="${idx}">Editar</button>
+                    <button class="btn btn-danger" data-action="delete" data-index="${idx}">Eliminar</button>
+                </div>
+            `;
+
+            list.appendChild(item);
+        });
+
+        // Delegación de eventos para editar/eliminar
+        list.querySelectorAll('button[data-action="edit"]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(e.currentTarget.dataset.index, 10);
+                this.showServicioForm(idx);
+            });
+        });
+
+        list.querySelectorAll('button[data-action="delete"]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(e.currentTarget.dataset.index, 10);
+                if (confirm('¿Eliminar este servicio?')) {
+                    this.deleteServicio(idx);
+                }
+            });
+        });
+    }
+
+    /**
+     * Muestra el formulario para crear/editar un servicio
+     * @param {number} index
+     */
+    showServicioForm(index = -1) {
+        const form = document.getElementById('servicio-form');
+        const titulo = document.getElementById('servicio-titulo');
+        const descripcion = document.getElementById('servicio-descripcion');
+        const icono = document.getElementById('servicio-icono');
+        const idxInput = document.getElementById('servicio-index');
+
+        if (!form || !titulo || !descripcion || !icono || !idxInput) return;
+
+        if (index >= 0) {
+            const servicios = this.contentManager.getServicios();
+            const servicio = servicios[index] || { titulo: '', descripcion: '', icono: '' };
+            titulo.value = servicio.titulo || '';
+            descripcion.value = servicio.descripcion || '';
+            icono.value = servicio.icono || '';
+            idxInput.value = String(index);
+        } else {
+            titulo.value = '';
+            descripcion.value = '';
+            icono.value = '';
+            idxInput.value = '-1';
+        }
+
+        form.hidden = false;
+    }
+
+    hideServicioForm() {
+        const form = document.getElementById('servicio-form');
+        if (form) form.hidden = true;
+    }
+
+    /**
+     * Guarda (crea o actualiza) un servicio
+     */
+    saveServicio() {
+        const titulo = document.getElementById('servicio-titulo').value.trim();
+        const descripcion = document.getElementById('servicio-descripcion').value.trim();
+        const icono = document.getElementById('servicio-icono').value.trim() || '📄';
+        const idx = parseInt(document.getElementById('servicio-index').value, 10);
+
+        if (!titulo) {
+            this.showNotification('El título es requerido', 'danger');
+            return;
+        }
+
+        const servicio = { titulo, descripcion, icono };
+
+        if (idx >= 0) {
+            this.contentManager.updateServicio(idx, servicio);
+            this.showNotification('Servicio actualizado', 'success');
+        } else {
+            this.contentManager.addServicio(servicio);
+            this.showNotification('Servicio agregado', 'success');
+        }
+
+        this.hideServicioForm();
+        this.serviciosController.renderList();
+        this.refreshPreview();
+    }
+
+    /**
+     * Elimina un servicio
+     * @param {number} index
+     */
+    deleteServicio(index) {
+        this.contentManager.deleteServicio(index);
+        this.serviciosController.renderList();
+        this.refreshPreview();
+    }
+
+    /**
+     * Recarga la vista previa
+     */
+    refreshPreview() {
+        const iframe = document.getElementById('preview-frame');
+        if (iframe) {
+            iframe.src = iframe.src;
+            setTimeout(() => {
+                this.sectionStyleManager.applySectionStyles();
+            }, 500);
+        }
     }
 
     /**
