@@ -75,20 +75,25 @@ class ServiciosController {
         if (!form || !titulo || !descripcion || !icono || !idxInput) return;
 
         if (index >= 0) {
-            const servicios = this.contentManager.getServicios();
-            const servicio = servicios[index] || { titulo: '', descripcion: '', icono: '' };
-            titulo.value = servicio.titulo || '';
-            descripcion.value = servicio.descripcion || '';
-            icono.value = servicio.icono || '';
-            idxInput.value = String(index);
+            const servicio = this._getServicioSafe(index);
+            this._populateFormFields(titulo, descripcion, icono, idxInput, servicio, index);
         } else {
-            titulo.value = '';
-            descripcion.value = '';
-            icono.value = '';
-            idxInput.value = '-1';
+            this._populateFormFields(titulo, descripcion, icono, idxInput, { titulo: '', descripcion: '', icono: '' }, -1);
         }
 
         form.hidden = false;
+    }
+
+    _getServicioSafe(index) {
+        const servicios = this.contentManager.getServicios() || [];
+        return servicios[index] || { titulo: '', descripcion: '', icono: '' };
+    }
+
+    _populateFormFields(tituloEl, descripcionEl, iconoEl, idxInput, servicio, idx) {
+        tituloEl.value = servicio.titulo || '';
+        descripcionEl.value = servicio.descripcion || '';
+        iconoEl.value = servicio.icono || '';
+        idxInput.value = (idx >= 0) ? String(idx) : '-1';
     }
 
     hideForm() {

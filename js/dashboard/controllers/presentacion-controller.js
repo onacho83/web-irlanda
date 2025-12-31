@@ -9,21 +9,24 @@ class PresentacionController {
     }
 
     loadValues(content) {
-        // content: may be from config.json or storage
         const presentacion = content.presentacion || {};
-        const presentacionTitulo = document.getElementById('presentacion-titulo');
-        const presentacionTexto = document.getElementById('presentacion-texto');
-        const presentacionLead = document.getElementById('presentacion-lead');
-        const presentacionImagen = document.getElementById('presentacion-imagen');
-        const presentacionCtaText = document.getElementById('presentacion-cta-text');
-        const presentacionCtaLink = document.getElementById('presentacion-cta-link');
+        this._setInputValue('presentacion-titulo', presentacion.titulo);
+        this._setInputValue('presentacion-texto', presentacion.texto);
+        this._setInputValue('presentacion-lead', presentacion.lead);
+        this._setInputValue('presentacion-imagen', presentacion.imagen);
+        this._setInputValue('presentacion-cta-text', presentacion.ctaText);
+        this._setInputValue('presentacion-cta-link', presentacion.ctaLink);
+    }
 
-        if (presentacionTitulo) presentacionTitulo.value = presentacion.titulo || '';
-        if (presentacionTexto) presentacionTexto.value = presentacion.texto || '';
-        if (presentacionLead) presentacionLead.value = presentacion.lead || '';
-        if (presentacionImagen) presentacionImagen.value = presentacion.imagen || '';
-        if (presentacionCtaText) presentacionCtaText.value = presentacion.ctaText || '';
-        if (presentacionCtaLink) presentacionCtaLink.value = presentacion.ctaLink || '';
+    /**
+     * Helper para asignar valor a un input si existe
+     * @param {string} id
+     * @param {string} value
+     */
+    _setInputValue(id, value) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = value || '';
     }
 
     save() {
