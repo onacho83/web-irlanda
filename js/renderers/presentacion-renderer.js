@@ -7,6 +7,8 @@ import BaseRenderer from './base-renderer.js';
 class PresentacionRenderer extends BaseRenderer {
     constructor() {
         super('presentacion');
+        // Alias para compatibilidad con implementaciones previas
+        this.section = this.root;
     }
 
     /**
@@ -14,7 +16,7 @@ class PresentacionRenderer extends BaseRenderer {
      * @param {Object} config - Configuración completa
      */
     render(config = {}) {
-        if (!this.section) return;
+        if (!this.root) return;
 
         // Usar únicamente la configuración pasada (no acceder a localStorage desde el renderer)
         const presentacion = (config && config.presentacion) ? config.presentacion : {};

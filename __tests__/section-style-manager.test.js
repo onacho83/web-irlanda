@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import SectionStyleManager from '../js/dashboard/section-style-manager.js';
 
 describe('SectionStyleManager', () => {

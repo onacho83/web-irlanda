@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import ServiciosController from '../js/dashboard/controllers/servicios-controller.js';
 
 describe('ServiciosController', () => {

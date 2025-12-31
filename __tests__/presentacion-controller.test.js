@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import PresentacionController from '../js/dashboard/controllers/presentacion-controller.js';
 
 describe('PresentacionController', () => {
