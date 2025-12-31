@@ -73,6 +73,23 @@ Usa el **Dashboard de Gestión** para personalizar colores y fondos sin tocar c�
 
 ## 🌐 Cómo Visualizar el Sitio
 
+### Ejecutar pruebas localmente (Windows)
+En Windows, la ejecución de scripts puede estar bloqueada por la política de PowerShell y evitar que `npm test` funcione. Opciones para ejecutar las pruebas localmente:
+
+- Habilitar ejecución de scripts para el usuario actual (ejecuta PowerShell como administrador o en tu sesión):
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+- Usar una shell alternativa como **Git Bash** o **WSL** y ejecutar `npm test` allí.
+
+- Si prefieres no cambiar la política, puedes ejecutar las pruebas desde un entorno de CI (ya configurado en `.github/workflows/ci.yml`) o en una máquina diferente.
+
+> ⚠️ Solo cambia la política si confías en los scripts del entorno. Revertir con `Set-ExecutionPolicy -ExecutionPolicy Restricted -Scope CurrentUser` si lo deseas.
+
+## 🎯 Cómo Actualizar la Información
+
 ### Opción 1: Abrir directamente
 Simplemente abre `index.html` en tu navegador. **Nota**: Algunas funciones pueden no funcionar correctamente debido a las restricciones CORS de los navegadores.
 
