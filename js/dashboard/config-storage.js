@@ -1,46 +1,68 @@
 /**
- * ConfigStorage - Gestor de almacenamiento de configuraciones
- * Principio SOLID: Single Responsibility - Solo se encarga del almacenamiento
- * Principio SOLID: Dependency Inversion - Proporciona una interfaz para el almacenamiento
+ * ConfigStorage - Gestor de almacenamiento de configuraciones (SRP + DIP).
+ * Usa una abstracción de almacenamiento inyectada.
  */
-import StorageService from '../services/storage-service.js';
 
-class ConfigStorage {
-    constructor(storageService = null) {
-        this.storageKey = 'imprenta-theme-config';
-        this.storage = storageService || new StorageService();
+const DEFAULT_THEME_KEY = 'imprenta-theme-config';
+
+export default class ConfigStorage {
+    /**
+     * @param {Object} [options]
+     * @param {{ get: (string) => string|null, set: (string, string) => void, remove: (string) => void }} [options.storage]
+     * @param {string} [options.storageKey]
+     */
+    constructor(options = {}) {
+        this.storage = options.storage || null;
+        this.storageKey = options.storageKey ?? DEFAULT_THEME_KEY;
     }
 
-    /**
-     * Guarda la configuración usando StorageService
-     * @param {Object} config - Configuración a guardar
-     */
+    _get() {
+        if (this.storage) return this.storage.get(this.storageKey);
+        try {
+            return localStorage.getItem(this.storageKey);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    _set(value) {
+        if (this.storage) {
+            this.storage.set(this.storageKey, value);
+            return true;
+        }
+        try {
+            localStorage.setItem(this.storageKey, value);
+            return true;
+        } catch (e) {
+            console.error('Error guardando configuración:', e);
+            return false;
+        }
+    }
+
+    _remove() {
+        if (this.storage) this.storage.remove(this.storageKey);
+        else try { localStorage.removeItem(this.storageKey); } catch (e) {}
+    }
+
     save(config) {
         try {
-            return this.storage.set(this.storageKey, config);
+            return this._set(JSON.stringify(config));
         } catch (error) {
             console.error('Error guardando configuración:', error);
             return false;
         }
     }
 
-    /**
-     * Carga la configuración usando StorageService
-     * @returns {Object|null} Configuración cargada o null si no existe
-     */
     load() {
         try {
-            return this.storage.get(this.storageKey);
+            const stored = this._get();
+            return stored ? JSON.parse(stored) : null;
         } catch (error) {
             console.error('Error cargando configuración:', error);
             return null;
         }
     }
 
-    /**
-     * Obtiene los valores por defecto
-     * @returns {Object} Configuración por defecto
-     */
     getDefaults() {
         return {
             colors: {
@@ -66,18 +88,8 @@ class ConfigStorage {
         };
     }
 
-    /**
-     * Restablece la configuración a los valores por defecto
-     */
     reset() {
-        try {
-            this.storage.remove(this.storageKey);
-        } catch (e) {
-            // ignore
-        }
+        this._remove();
         return this.getDefaults();
     }
 }
-
-export default ConfigStorage;
-

@@ -1,9 +1,11 @@
 /**
- * HeaderRenderer - Renderiza el header de la página
- * Principio SOLID: Single Responsibility - Solo se encarga de renderizar el header
+ * HeaderRenderer - Renderiza el header de la página (SRP).
  */
-class HeaderRenderer {
+import BaseRenderer from './base-renderer.js';
+
+class HeaderRenderer extends BaseRenderer {
     constructor() {
+        super();
         this.headerElement = document.getElementById('header');
     }
 

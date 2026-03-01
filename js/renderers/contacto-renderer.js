@@ -1,9 +1,12 @@
 /**
- * ContactoRenderer - Renderiza la sección de contacto
- * Principio SOLID: Single Responsibility - Solo se encarga de renderizar el contacto
+ * ContactoRenderer - Renderiza la sección de contacto (SRP).
  */
-class ContactoRenderer {
+import BaseRenderer from './base-renderer.js';
+import { createWhatsAppLink } from '../utils/whatsapp-link.js';
+
+class ContactoRenderer extends BaseRenderer {
     constructor() {
+        super();
         this.containerElement = document.getElementById('contacto-container');
     }
 
@@ -17,55 +20,61 @@ class ContactoRenderer {
         }
 
         const empresa = config.empresa;
-        const whatsappLink = this.createWhatsAppLink(empresa.telefono);
-        
+        const telefonos = this._getTelefonos(empresa);
+        const sucursales = Array.isArray(empresa.sucursales) ? empresa.sucursales : [];
+
+        const telefonosHTML = telefonos.length > 0
+            ? telefonos.map(t => {
+                const link = createWhatsAppLink(t.numero);
+                const label = t.etiqueta ? `${t.etiqueta}: ` : '';
+                return `<div class="contacto-item">
+                    <strong>${label}Teléfono:</strong>
+                    <a href="${link}" target="_blank" rel="noopener" class="telefono-link whatsapp-link" title="Abrir WhatsApp">
+                        <i class="fab fa-whatsapp whatsapp-icon" aria-hidden="true"></i> ${t.numero}
+                    </a>
+                </div>`;
+            }).join('')
+            : '';
+
+        const sucursalesHTML = sucursales.length > 0
+            ? sucursales.map(s => `
+                <div class="contacto-item sucursal-item" style="margin-top:1rem;padding:0.75rem;background:rgba(0,0,0,0.03);border-radius:0.5rem;">
+                    <strong>${s.nombre || 'Sucursal'}</strong>
+                    ${s.direccion ? `<p style="margin:0.25rem 0;">${s.direccion}</p>` : ''}
+                    ${s.telefono ? `<p style="margin:0.25rem 0;"><a href="${createWhatsAppLink(s.telefono)}" target="_blank" rel="noopener" class="telefono-link whatsapp-link"><i class="fab fa-whatsapp whatsapp-icon"></i> ${s.telefono}</a></p>` : ''}
+                    ${s.horario ? `<p style="margin:0.25rem 0;font-size:0.9em;">🕐 ${s.horario}</p>` : ''}
+                    ${s.email ? `<p style="margin:0.25rem 0;"><a href="mailto:${s.email}">${s.email}</a></p>` : ''}
+                </div>
+            `).join('')
+            : '';
+
         this.containerElement.innerHTML = `
             <div class="contacto-grid">
-                <div class="contacto-item">
-                    <strong>Teléfono:</strong>
-                    <a href="${whatsappLink}" target="_blank" rel="noopener" class="telefono-link whatsapp-link" title="Abrir WhatsApp en el navegador">
-                        <i class="fab fa-whatsapp whatsapp-icon" aria-hidden="true"></i> ${empresa.telefono}
-                    </a>
-                </div>
+                ${telefonosHTML}
                 <div class="contacto-item">
                     <strong>Email:</strong>
-                    <a href="mailto:${empresa.email}">${empresa.email}</a>
+                    <a href="mailto:${empresa.email || ''}">${empresa.email || ''}</a>
                 </div>
                 <div class="contacto-item">
                     <strong>Dirección:</strong>
-                    <p>${empresa.direccion}</p>
+                    <p>${empresa.direccion || ''}</p>
                 </div>
                 <div class="contacto-item">
                     <strong>Horario:</strong>
-                    <p>${empresa.horario}</p>
+                    <p>${empresa.horario || ''}</p>
                 </div>
+                ${sucursalesHTML ? `<div class="contacto-item" style="grid-column:1/-1;"><strong>Sucursales</strong>${sucursalesHTML}</div>` : ''}
             </div>
         `;
     }
 
-    /**
-     * Crea el enlace de WhatsApp Web a partir del número de teléfono
-     * Principio SOLID: Single Responsibility - Método con una única responsabilidad
-     * @param {string} telefono - Número de teléfono
-     * @returns {string} URL de WhatsApp Web (navegador)
-     */
-    createWhatsAppLink(telefono) {
-        if (!telefono) return '#';
-        
-        // Limpiar el número: eliminar espacios, guiones, paréntesis, etc.
-        let numeroLimpio = telefono.replace(/\s|-|\(|\)/g, '');
-        
-        // Si no comienza con código de país, agregar 54 (Argentina)
-        // Asumimos que si tiene 11 dígitos o menos y no empieza con +, es número argentino
-        if (!numeroLimpio.startsWith('+') && !numeroLimpio.startsWith('54') && numeroLimpio.length <= 11) {
-            numeroLimpio = '54' + numeroLimpio;
-        } else if (numeroLimpio.startsWith('+')) {
-            numeroLimpio = numeroLimpio.substring(1);
-        }
-        
-        // Usar WhatsApp Web para que se abra en el navegador
-        return `https://web.whatsapp.com/send?phone=${numeroLimpio}`;
+    /** @param {Object} empresa */
+    _getTelefonos(empresa) {
+        if (Array.isArray(empresa.telefonos)) return empresa.telefonos;
+        if (empresa.telefono) return [{ numero: empresa.telefono, etiqueta: 'Principal' }];
+        return [];
     }
+
 }
 
 export default ContactoRenderer;

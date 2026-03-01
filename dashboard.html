@@ -153,9 +153,23 @@
                         <input type="text" id="empresa-nombre" class="text-input" placeholder="Nombre de la empresa">
                     </div>
 
-                    <div class="control-group">
-                        <label for="empresa-telefono">Teléfono</label>
-                        <input type="text" id="empresa-telefono" class="text-input" placeholder="11 4951 6535">
+                    <div class="control-group" style="grid-column: 1 / -1;">
+                        <label>Teléfonos</label>
+                        <div id="telefonos-list" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
+                        <div style="margin-top: 0.5rem;">
+                            <button id="add-telefono-btn" class="btn btn-secondary">+ Agregar Teléfono</button>
+                        </div>
+                        <div id="telefono-form" style="margin-top: 0.75rem; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; display: none;">
+                            <label for="telefono-numero">Número</label>
+                            <input type="text" id="telefono-numero" class="text-input" placeholder="11 4951 6535">
+                            <label for="telefono-etiqueta" style="margin-top: 0.5rem;">Etiqueta (opcional)</label>
+                            <input type="text" id="telefono-etiqueta" class="text-input" placeholder="Principal, Ventas, etc.">
+                            <input type="hidden" id="telefono-index" value="-1">
+                            <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem;">
+                                <button id="save-telefono-btn" class="btn btn-primary">Guardar</button>
+                                <button id="cancel-telefono-btn" class="btn btn-secondary">Cancelar</button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="control-group">
@@ -175,6 +189,36 @@
                 </div>
                 <div class="section-actions">
                     <button id="save-empresa-btn" class="btn btn-primary">Guardar Datos de Empresa</button>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>🏪 Sucursales</h2>
+                <div class="controls-grid">
+                    <div class="control-group" style="grid-column: 1 / -1;">
+                        <label>Lista de Sucursales</label>
+                        <div id="sucursales-list" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+                        <div style="margin-top: 0.75rem;">
+                            <button id="add-sucursal-btn" class="btn btn-primary">+ Agregar Sucursal</button>
+                        </div>
+                        <div id="sucursal-form" style="margin-top: 0.75rem; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; display: none;">
+                            <label for="sucursal-nombre">Nombre de la sucursal</label>
+                            <input type="text" id="sucursal-nombre" class="text-input" placeholder="Sucursal Centro">
+                            <label for="sucursal-direccion" style="margin-top: 0.5rem;">Dirección</label>
+                            <input type="text" id="sucursal-direccion" class="text-input" placeholder="Calle 123, Ciudad">
+                            <label for="sucursal-telefono" style="margin-top: 0.5rem;">Teléfono principal</label>
+                            <input type="text" id="sucursal-telefono" class="text-input" placeholder="11 4951 6535">
+                            <label for="sucursal-horario" style="margin-top: 0.5rem;">Horario</label>
+                            <input type="text" id="sucursal-horario" class="text-input" placeholder="Lunes a Viernes: 9:00 - 18:00">
+                            <label for="sucursal-email" style="margin-top: 0.5rem;">Email (opcional)</label>
+                            <input type="email" id="sucursal-email" class="text-input" placeholder="sucursal@empresa.com">
+                            <input type="hidden" id="sucursal-index" value="-1">
+                            <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+                                <button id="save-sucursal-btn" class="btn btn-primary">Guardar Sucursal</button>
+                                <button id="cancel-sucursal-btn" class="btn btn-secondary">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
