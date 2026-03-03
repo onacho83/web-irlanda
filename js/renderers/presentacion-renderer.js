@@ -6,9 +6,8 @@ import BaseRenderer from './base-renderer.js';
 
 class PresentacionRenderer extends BaseRenderer {
     constructor() {
+        // BaseRenderer se encargará de buscar el elemento con id 'presentacion'
         super('presentacion');
-        // Alias para compatibilidad con implementaciones previas
-        this.section = this.root;
     }
 
     /**
@@ -17,6 +16,9 @@ class PresentacionRenderer extends BaseRenderer {
      */
     render(config = {}) {
         if (!this.root) return;
+
+        // debug
+        console.log('PresentacionRenderer.render called, root=', this.root, 'config.presentacion=', config.presentacion);
 
         // Usar únicamente la configuración pasada (no acceder a localStorage desde el renderer)
         const presentacion = (config && config.presentacion) ? config.presentacion : {};
