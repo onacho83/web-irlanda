@@ -135,6 +135,58 @@ export default class ContentManager {
         return content?.welcome || { titulo: '', subtitulo: '' };
     }
 
+    /** @returns {{ titulo: string, descripcion: string, icono: string }[]} */
+    getServicios() {
+        const content = this.loadContentFromStorage();
+        return Array.isArray(content?.servicios) ? content.servicios : [];
+    }
+
+    /** @param {{ titulo: string, descripcion: string, icono: string }} servicio */
+    addServicio(servicio) {
+        const content = this.loadContentFromStorage() || {};
+        if (!Array.isArray(content.servicios)) content.servicios = [];
+        content.servicios.push(servicio);
+        this.saveContentToStorage(content);
+        return content;
+    }
+
+    /** @param {number} index
+     * @param {{ titulo: string, descripcion: string, icono: string }} servicio */
+    updateServicio(index, servicio) {
+        const content = this.loadContentFromStorage() || {};
+        if (!Array.isArray(content.servicios)) content.servicios = [];
+        if (index >= 0 && index < content.servicios.length) {
+            content.servicios[index] = servicio;
+            this.saveContentToStorage(content);
+        }
+        return content;
+    }
+
+    /** @param {number} index */
+    deleteServicio(index) {
+        const content = this.loadContentFromStorage() || {};
+        if (Array.isArray(content.servicios) && index >= 0 && index < content.servicios.length) {
+            content.servicios.splice(index, 1);
+            this.saveContentToStorage(content);
+        }
+        return content;
+    }
+
+    /** @returns {{ titulo?: string, texto?: string, lead?: string, imagen?: string, ctaText?: string, ctaLink?: string }} */
+    getPresentacion() {
+        const content = this.loadContentFromStorage();
+        return content?.presentacion || {};
+    }
+
+    /** @param {{ titulo?: string, texto?: string, lead?: string, imagen?: string, ctaText?: string, ctaLink?: string }} presentacion */
+    updatePresentacion(presentacion) {
+        const content = this.loadContentFromStorage() || {};
+        if (!content.presentacion) content.presentacion = {};
+        Object.assign(content.presentacion, presentacion);
+        this.saveContentToStorage(content);
+        return content;
+    }
+
     exportContent() {
         const content = this.loadContentFromStorage();
         return JSON.stringify(content, null, 2);

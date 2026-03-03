@@ -151,9 +151,18 @@ class DashboardApp {
             });
         });
 
+        const editEmpresaBtn = document.getElementById('edit-empresa-btn');
         const saveEmpresaBtn = document.getElementById('save-empresa-btn');
+        const cancelEmpresaBtn = document.getElementById('cancel-empresa-btn');
+        
+        if (editEmpresaBtn) {
+            editEmpresaBtn.addEventListener('click', () => this._showEmpresaForm());
+        }
         if (saveEmpresaBtn) {
             saveEmpresaBtn.addEventListener('click', () => this.saveEmpresaData());
+        }
+        if (cancelEmpresaBtn) {
+            cancelEmpresaBtn.addEventListener('click', () => this._hideEmpresaForm());
         }
 
         const saveWelcomeBtn = document.getElementById('save-welcome-btn');
@@ -377,9 +386,16 @@ class DashboardApp {
 
     async loadContentValues() {
         try {
-            const content = await this.contentManager.loadContent();
-            this._migrateContentForTelefonos(content);
-            this.contentManager.saveContentToStorage(content);
+            // Primero intentar cargar desde localStorage (cambios persistentes del usuario)
+            let content = this.contentManager.loadContentFromStorage();
+            
+            if (!content) {
+                // Si no hay datos guardados, cargar desde config.json
+                content = await this.contentManager.loadContent();
+                // Guardar en localStorage para futuras cargas
+                this.contentManager.saveContentToStorage(content);
+            }
+            
             this._fillContentForm(content);
         } catch (error) {
             console.error('Error cargando contenido:', error);
@@ -404,24 +420,64 @@ class DashboardApp {
         set('empresa-email', empresa.email);
         set('empresa-direccion', empresa.direccion);
         set('empresa-horario', empresa.horario);
+        set('empresa-telefono-input', empresa.telefono);
         set('welcome-titulo', welcome.titulo);
         set('welcome-subtitulo', welcome.subtitulo);
+        this._updateEmpresaDisplay(empresa);
         this._renderTelefonosList();
         this._renderSucursalesList();
     }
 
+    _updateEmpresaDisplay(empresa) {
+        const displayNombre = document.getElementById('display-nombre');
+        const displayDireccion = document.getElementById('display-direccion');
+        const displayTelefono = document.getElementById('display-telefono');
+        const displayEmail = document.getElementById('display-email');
+        const displayHorario = document.getElementById('display-horario');
+        
+        if (displayNombre) displayNombre.textContent = empresa.nombre || 'Empresa';
+        if (displayDireccion) displayDireccion.textContent = empresa.direccion || 'Sin dirección';
+        if (displayTelefono) displayTelefono.textContent = empresa.telefono || 'Sin teléfono';
+        if (displayEmail) displayEmail.textContent = empresa.email || 'Sin email';
+        if (displayHorario) displayHorario.textContent = empresa.horario || 'Horario no especificado';
+    }
+
+    _showEmpresaForm() {
+        const form = document.getElementById('empresa-form');
+        const display = document.getElementById('empresa-display');
+        if (form) form.style.display = 'block';
+        if (display) display.style.display = 'none';
+    }
+
+    _hideEmpresaForm() {
+        const form = document.getElementById('empresa-form');
+        const display = document.getElementById('empresa-display');
+        if (form) form.style.display = 'none';
+        if (display) display.style.display = 'block';
+    }
+
     saveEmpresaData() {
         const get = (id) => (document.getElementById(id) || {}).value;
-        const telefonos = this.contentManager.getTelefonos();
-        const primaryTelefono = telefonos.length > 0 ? telefonos[0].numero : '';
-        this.contentManager.updateEmpresaData({
-            nombre: get('empresa-nombre'),
-            telefono: primaryTelefono,
-            email: get('empresa-email'),
-            direccion: get('empresa-direccion'),
-            horario: get('empresa-horario')
-        });
-        this.notificationService.show('Datos de empresa guardados en localStorage. Para aplicar cambios permanentes, actualiza config.json manualmente', 'success');
+        const nombre = get('empresa-nombre');
+        const email = get('empresa-email');
+        const direccion = get('empresa-direccion');
+        const horario = get('empresa-horario');
+        const telefono = get('empresa-telefono-input');
+
+        const empresaData = {
+            nombre: nombre || '',
+            telefono: telefono || '',
+            email: email || '',
+            direccion: direccion || '',
+            horario: horario || ''
+        };
+
+        this.contentManager.updateEmpresaData(empresaData);
+        
+        this._updateEmpresaDisplay(empresaData);
+        this._hideEmpresaForm();
+        
+        this.notificationService.show('Datos de empresa guardados', 'success');
     }
 
     saveWelcomeMessage() {

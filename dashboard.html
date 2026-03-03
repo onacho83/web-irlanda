@@ -146,15 +146,52 @@
             </section>
 
             <section class="dashboard-section">
-                <h2>🏢 Datos de la Empresa</h2>
+                <h2>🏢 Datos de la Empresa Central</h2>
                 <div class="controls-grid">
-                    <div class="control-group">
-                        <label for="empresa-nombre">Nombre de la Empresa</label>
-                        <input type="text" id="empresa-nombre" class="text-input" placeholder="Nombre de la empresa">
+                    <div class="control-group" style="grid-column: 1 / -1;">
+                        <div id="empresa-display" style="padding: 1rem; background: #f9fafb; border-radius: 0.5rem; border: 1px solid #e5e7eb; margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <div>
+                                    <div style="margin-bottom: 0.5rem;">
+                                        <strong style="font-size: 1.125rem;" id="display-nombre">Imprenta Irlanda</strong>
+                                    </div>
+                                    <p style="margin: 0.25rem 0; font-size: 0.875rem; color: #4b5563;">
+                                        📍 <span id="display-direccion">Hipólito Yrigoyen 2087, CABA</span>
+                                    </p>
+                                    <p style="margin: 0.25rem 0; font-size: 0.875rem; color: #4b5563;">
+                                        📞 <span id="display-telefono">11 4951 6535</span>
+                                    </p>
+                                    <p style="margin: 0.25rem 0; font-size: 0.875rem; color: #4b5563;">
+                                        ✉️ <span id="display-email">info@imprentairlanda.com</span>
+                                    </p>
+                                    <p style="margin: 0.25rem 0; font-size: 0.875rem; color: #4b5563;">
+                                        🕐 <span id="display-horario">Lunes a Viernes: 8:30 - 19:00, Sábados: 10:00 - 13:00</span>
+                                    </p>
+                                </div>
+                                <button type="button" class="btn btn-small" id="edit-empresa-btn">Editar</button>
+                            </div>
+                        </div>
+
+                        <div id="empresa-form" style="margin-top: 0.75rem; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; display: none;">
+                            <label for="empresa-nombre">Nombre de la Empresa</label>
+                            <input type="text" id="empresa-nombre" class="text-input" placeholder="Nombre de la empresa">
+                            <label for="empresa-direccion" style="margin-top: 0.5rem;">Dirección</label>
+                            <input type="text" id="empresa-direccion" class="text-input" placeholder="Dirección completa">
+                            <label for="empresa-telefono-input" style="margin-top: 0.5rem;">Teléfono principal</label>
+                            <input type="text" id="empresa-telefono-input" class="text-input" placeholder="11 4951 6535">
+                            <label for="empresa-email" style="margin-top: 0.5rem;">Email</label>
+                            <input type="email" id="empresa-email" class="text-input" placeholder="info@empresa.com">
+                            <label for="empresa-horario" style="margin-top: 0.5rem;">Horario</label>
+                            <input type="text" id="empresa-horario" class="text-input" placeholder="Lunes a Viernes: 9:00 - 18:00">
+                            <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+                                <button type="button" id="save-empresa-btn" class="btn btn-primary">Guardar</button>
+                                <button type="button" id="cancel-empresa-btn" class="btn btn-secondary">Cancelar</button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="control-group" style="grid-column: 1 / -1;">
-                        <label>Teléfonos</label>
+                        <label>Teléfonos Adicionales</label>
                         <div id="telefonos-list" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
                         <div style="margin-top: 0.5rem;">
                             <button id="add-telefono-btn" class="btn btn-secondary">+ Agregar Teléfono</button>
@@ -171,24 +208,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="control-group">
-                        <label for="empresa-email">Email</label>
-                        <input type="email" id="empresa-email" class="text-input" placeholder="info@empresa.com">
-                    </div>
-
-                    <div class="control-group">
-                        <label for="empresa-direccion">Dirección</label>
-                        <input type="text" id="empresa-direccion" class="text-input" placeholder="Dirección completa">
-                    </div>
-
-                    <div class="control-group">
-                        <label for="empresa-horario">Horario</label>
-                        <input type="text" id="empresa-horario" class="text-input" placeholder="Lunes a Viernes: 9:00 - 18:00">
-                    </div>
-                </div>
-                <div class="section-actions">
-                    <button id="save-empresa-btn" class="btn btn-primary">Guardar Datos de Empresa</button>
                 </div>
             </section>
 

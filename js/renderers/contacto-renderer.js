@@ -23,47 +23,109 @@ class ContactoRenderer extends BaseRenderer {
         const telefonos = this._getTelefonos(empresa);
         const sucursales = Array.isArray(empresa.sucursales) ? empresa.sucursales : [];
 
+        // Renderizar la central como tarjeta
+        const centralHTML = this._renderCentralCard(empresa, telefonos);
+
+        // Renderizar sucursales
+        const sucursalesHTML = sucursales.length > 0
+            ? `<div style="margin-top: 2rem;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                    ${sucursales.map(s => this._renderSucursalCard(s)).join('')}
+                </div>
+            </div>`
+            : '';
+
+        this.containerElement.innerHTML = centralHTML + sucursalesHTML;
+    }
+
+    /**
+     * Renderiza una tarjeta para la empresa central
+     * @param {Object} empresa
+     * @param {Array} telefonos
+     * @returns {string}
+     */
+    _renderCentralCard(empresa, telefonos) {
         const telefonosHTML = telefonos.length > 0
             ? telefonos.map(t => {
                 const link = createWhatsAppLink(t.numero);
-                const label = t.etiqueta ? `${t.etiqueta}: ` : '';
-                return `<div class="contacto-item">
-                    <strong>${label}Teléfono:</strong>
+                // omit etiqueta if it's "Principal" (case-insensitive)
+                const label = t.etiqueta && t.etiqueta.toLowerCase() !== 'principal' ? `${t.etiqueta}: ` : '';
+                return `<p style="margin: 0.375rem 0; font-size: 0.9rem;">
+                    <strong>${label}</strong>
                     <a href="${link}" target="_blank" rel="noopener" class="telefono-link whatsapp-link" title="Abrir WhatsApp">
                         <i class="fab fa-whatsapp whatsapp-icon" aria-hidden="true"></i> ${t.numero}
                     </a>
-                </div>`;
+                </p>`;
             }).join('')
             : '';
 
-        const sucursalesHTML = sucursales.length > 0
-            ? sucursales.map(s => `
-                <div class="contacto-item sucursal-item" style="margin-top:1rem;padding:0.75rem;background:rgba(0,0,0,0.03);border-radius:0.5rem;">
-                    <strong>${s.nombre || 'Sucursal'}</strong>
-                    ${s.direccion ? `<p style="margin:0.25rem 0;">${s.direccion}</p>` : ''}
-                    ${s.telefono ? `<p style="margin:0.25rem 0;"><a href="${createWhatsAppLink(s.telefono)}" target="_blank" rel="noopener" class="telefono-link whatsapp-link"><i class="fab fa-whatsapp whatsapp-icon"></i> ${s.telefono}</a></p>` : ''}
-                    ${s.horario ? `<p style="margin:0.25rem 0;font-size:0.9em;">🕐 ${s.horario}</p>` : ''}
-                    ${s.email ? `<p style="margin:0.25rem 0;"><a href="mailto:${s.email}">${s.email}</a></p>` : ''}
-                </div>
-            `).join('')
+        const emailHTML = empresa.email
+            ? `<p style="margin: 0.375rem 0; font-size: 0.9rem;">
+                <strong>✉️ Email:</strong> <a href="mailto:${empresa.email}">${empresa.email}</a>
+            </p>`
             : '';
 
-        this.containerElement.innerHTML = `
-            <div class="contacto-grid">
+        return `
+            <div style="padding: 1.5rem; border: 1px solid #e5e7eb; border-radius: 0.75rem; background: #ffffff; margin-bottom: 2rem;">
+                <h3 style="margin: 0 0 1rem 0; font-size: 1.375rem;">${empresa.nombre || 'Empresa Central'}</h3>
+                
+                ${empresa.direccion ? `
+                <p style="margin: 0.375rem 0; font-size: 0.9rem;">
+                    <strong>📍 Dirección:</strong> ${empresa.direccion}
+                </p>
+                ` : ''}
+
                 ${telefonosHTML}
-                <div class="contacto-item">
-                    <strong>Email:</strong>
-                    <a href="mailto:${empresa.email || ''}">${empresa.email || ''}</a>
-                </div>
-                <div class="contacto-item">
-                    <strong>Dirección:</strong>
-                    <p>${empresa.direccion || ''}</p>
-                </div>
-                <div class="contacto-item">
-                    <strong>Horario:</strong>
-                    <p>${empresa.horario || ''}</p>
-                </div>
-                ${sucursalesHTML ? `<div class="contacto-item" style="grid-column:1/-1;"><strong>Sucursales</strong>${sucursalesHTML}</div>` : ''}
+                ${emailHTML}
+
+                ${empresa.horario ? `
+                <p style="margin: 0.375rem 0; font-size: 0.9rem;">
+                    <strong>🕐 Horario:</strong> ${empresa.horario}
+                </p>
+                ` : ''}
+            </div>
+        `;
+    }
+
+    /**
+     * Renderiza una tarjeta para una sucursal
+     * @param {Object} sucursal
+     * @returns {string}
+     */
+    _renderSucursalCard(sucursal) {
+        const telefonoHTML = sucursal.telefono
+            ? `<p style="margin: 0.375rem 0; font-size: 0.9rem;">
+                <a href="${createWhatsAppLink(sucursal.telefono)}" target="_blank" rel="noopener" class="telefono-link whatsapp-link">
+                    <i class="fab fa-whatsapp whatsapp-icon"></i> ${sucursal.telefono}
+                </a>
+            </p>`
+            : '';
+
+        const horarioHTML = sucursal.horario
+            ? `<p style="margin: 0.375rem 0; font-size: 0.9rem;">
+                <strong>🕐</strong> ${sucursal.horario}
+            </p>`
+            : '';
+
+        const emailHTML = sucursal.email
+            ? `<p style="margin: 0.375rem 0; font-size: 0.9rem;">
+                <a href="mailto:${sucursal.email}">${sucursal.email}</a>
+            </p>`
+            : '';
+
+        return `
+            <div style="padding: 1.5rem; border: 1px solid #e5e7eb; border-radius: 0.75rem; background: #ffffff;">
+                ${sucursal.nombre ? `<h4 style="margin: 0 0 0.75rem 0; font-size: 1.125rem;">${sucursal.nombre}</h4>` : ''}
+                
+                ${sucursal.direccion ? `
+                <p style="margin: 0.375rem 0; font-size: 0.9rem;">
+                    <strong>📍</strong> ${sucursal.direccion}
+                </p>
+                ` : ''}
+
+                ${telefonoHTML}
+                ${horarioHTML}
+                ${emailHTML}
             </div>
         `;
     }
@@ -74,7 +136,6 @@ class ContactoRenderer extends BaseRenderer {
         if (empresa.telefono) return [{ numero: empresa.telefono, etiqueta: 'Principal' }];
         return [];
     }
-
 }
 
 export default ContactoRenderer;

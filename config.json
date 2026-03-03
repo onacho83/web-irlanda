@@ -2,9 +2,16 @@
   "empresa": {
     "nombre": "Imprenta Irlanda",
     "telefono": "11 4951 6535",
+    "telefonos": [
+      {
+        "numero": "11 4951 6535",
+        "etiqueta": "Principal"
+      }
+    ],
     "email": "info@imprentairlanda.com",
     "direccion": "Hipólito Yrigoyen 2087, CABA",
-    "horario": "Lunes a Viernes: 8:30 - 19:00, Sábados: 10:00 - 13:00"
+    "horario": "Lunes a Viernes: 8:30 - 19:00, Sábados: 10:00 - 13:00",
+    "sucursales": []
   },
   "servicios": [
     {

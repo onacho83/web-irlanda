@@ -35,36 +35,34 @@ class FooterRenderer extends BaseRenderer {
 
         const sucursalesHTML = sucursales.length > 0
             ? sucursales.map(s => `
-                <div class="footer-sucursal" style="margin-top:0.5rem;">
-                    <strong>${s.nombre || 'Sucursal'}</strong>
-                    ${s.direccion ? `<p>${s.direccion}</p>` : ''}
-                    ${s.telefono ? `<p><a href="${createWhatsAppLink(s.telefono)}" target="_blank" rel="noopener" class="footer-telefono-link whatsapp-link"><i class="fab fa-whatsapp whatsapp-icon"></i> ${s.telefono}</a></p>` : ''}
-                    ${s.email ? `<p>${s.email}</p>` : ''}
+                <div class="footer-section" style="flex:1 1 200px;">
+                    ${s.nombre ? `<h3>${s.nombre}</h3>` : ''}
+                    ${s.direccion ? `<p style="margin:0.2rem 0;">${s.direccion}</p>` : ''}
+                    ${s.telefono ? `<p style="margin:0.2rem 0;"><a href="${createWhatsAppLink(s.telefono)}" target="_blank" rel="noopener" class="footer-telefono-link whatsapp-link"><i class="fab fa-whatsapp whatsapp-icon"></i> ${s.telefono}</a></p>` : ''}
+                    ${s.email ? `<p style="margin:0.2rem 0;">${s.email}</p>` : ''}
                 </div>
             `).join('')
             : '';
 
+        // estilo de layout: columnas de footer-section
         this.footerElement.innerHTML = `
             <div class="container">
-                <div class="footer-content">
-                    <div class="footer-section">
+                <div class="footer-content" style="display:flex; flex-wrap:wrap; gap:2rem; align-items:flex-start;">
+                    <div class="footer-section" style="flex:1 1 200px;">
                         <h3>${empresa.nombre || 'Imprenta'}</h3>
-                        <p>${empresa.direccion || ''}</p>
-                    </div>
-                    <div class="footer-section">
-                        <h3>Contacto</h3>
+                        ${empresa.direccion ? `<p>${empresa.direccion}</p>` : ''}
                         ${telefonosHTML}
                         ${empresa.email ? `<p>${empresa.email}</p>` : ''}
-                        ${sucursalesHTML}
                     </div>
+                    ${sucursalesHTML}
                     ${redesHTML ? `
-                    <div class="footer-section">
+                    <div class="footer-section" style="flex:1 1 200px;">
                         <h3>Síguenos</h3>
                         ${redesHTML}
                     </div>
                     ` : ''}
                 </div>
-                <div class="footer-bottom">
+                <div class="footer-bottom" style="margin-top:1.5rem; text-align:center;">
                     <p>&copy; ${new Date().getFullYear()} ${empresa.nombre || 'Imprenta'}. Todos los derechos reservados.</p>
                 </div>
             </div>
