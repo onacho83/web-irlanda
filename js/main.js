@@ -32,6 +32,8 @@ export function createAppDependencies(options = {}) {
     };
 }
 
+console.log('main.js module loaded, version 2');
+
 class App {
     /**
      * @param {ReturnType<createAppDependencies>} [deps]
