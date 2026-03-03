@@ -161,3 +161,31 @@ Actualiza los enlaces en la sección `redesSociales` de `config.json`.
 
 Libre para uso personal y comercial.
 
+## 🚀 Despliegue / Hosting
+
+Este proyecto es una web estática. Opciones recomendadas para publicar:
+
+- Netlify (recomendado):
+  - Opción rápida: entra en https://app.netlify.com/drop y sube un .zip con los archivos del repo.
+  - Con Netlify CLI (instala localmente):
+    ```bash
+    npm i -g netlify-cli
+    netlify deploy --prod --dir=.
+    ```
+
+- GitHub Pages:
+  - Ve a los ajustes del repositorio → Pages y selecciona la rama `main` y la carpeta `/` o `docs`.
+  - O usando `gh-pages`:
+    ```bash
+    npm install --save-dev gh-pages
+    npx gh-pages -d .
+    ```
+
+Notas:
+- He incluido `netlify.toml` para facilitar despliegues en Netlify (publica el directorio raíz).
+- También agregué scripts en `package.json`:
+  - `npm run deploy:netlify` — usa Netlify CLI (requiere instalación previa)
+  - `npm run deploy:ghpages` — usa `gh-pages` (requiere instalación previa)
+- Si eliges GitHub Pages y prefieres no instalar herramientas, sube el contenido al directorio `docs/` y configúralo desde la UI de GitHub.
+
+

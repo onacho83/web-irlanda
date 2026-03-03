@@ -4,7 +4,9 @@
   "type": "module",
   "scripts": {
     "test": "jest",
-    "lint": "eslint . --ext .js"
+    "lint": "eslint . --ext .js",
+    "deploy:netlify": "netlify deploy --prod --dir=.",
+    "deploy:ghpages": "npx gh-pages -d ."
   },
   "devDependencies": {
     "eslint": "^8.0.0",
