@@ -171,6 +171,11 @@ class DashboardApp {
             saveWelcomeBtn.addEventListener('click', () => this.saveWelcomeMessage());
         }
 
+        const savePresentacionBtn = document.getElementById('save-presentacion-btn');
+        if (savePresentacionBtn) {
+            savePresentacionBtn.addEventListener('click', () => this.savePresentacion());
+        }
+
         this._initTelefonosControls();
         this._initSucursalesControls();
 
@@ -566,6 +571,7 @@ class DashboardApp {
 
     _fillContentForm(content) {
         const empresa = content.empresa || {};
+        const presentacion = content.presentacion || {};
         const welcome = content.welcome || {};
         const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
         set('empresa-nombre', empresa.nombre);
@@ -575,6 +581,13 @@ class DashboardApp {
         set('empresa-telefono-input', empresa.telefono);
         set('welcome-titulo', welcome.titulo);
         set('welcome-subtitulo', welcome.subtitulo);
+        // Presentación
+        set('presentacion-titulo', presentacion.titulo);
+        set('presentacion-texto', presentacion.texto);
+        set('presentacion-lead', presentacion.lead);
+        set('presentacion-imagen', presentacion.imagen);
+        set('presentacion-cta-text', presentacion.ctaText);
+        set('presentacion-cta-link', presentacion.ctaLink);
         this._updateEmpresaDisplay(empresa);
         this._renderTelefonosList();
         this._renderSucursalesList();
@@ -637,6 +650,28 @@ class DashboardApp {
         const subtitulo = (document.getElementById('welcome-subtitulo') || {}).value;
         this.contentManager.updateWelcomeMessage(titulo, subtitulo);
         this.notificationService.show('Mensaje de bienvenida guardado', 'success');
+    }
+
+    savePresentacion() {
+        const get = (id) => (document.getElementById(id) || {}).value;
+        const titulo = get('presentacion-titulo');
+        const texto = get('presentacion-texto');
+        const lead = get('presentacion-lead');
+        const imagen = get('presentacion-imagen');
+        const ctaText = get('presentacion-cta-text');
+        const ctaLink = get('presentacion-cta-link');
+
+        this.contentManager.updatePresentacion({ titulo, texto, lead, imagen, ctaText, ctaLink });
+        this.notificationService.show('Presentación guardada', 'success');
+        // Intentar refrescar preview si existe iframe
+        const iframe = document.getElementById('preview-frame');
+        if (iframe) {
+            iframe.src = iframe.src;
+            setTimeout(() => {
+                this.backgroundManager.applyToPreview();
+                this.sectionStyleManager.applySectionStyles();
+            }, 300);
+        }
     }
 }
 

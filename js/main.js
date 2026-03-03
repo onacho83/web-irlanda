@@ -7,6 +7,7 @@ import ThemeApplier from './theme-applier.js';
 import ContentManager from './dashboard/content-manager.js';
 import HeaderRenderer from './renderers/header-renderer.js';
 import HeroRenderer from './renderers/hero-renderer.js';
+import PresentacionRenderer from './renderers/presentacion-renderer.js';
 import ServiciosRenderer from './renderers/servicios-renderer.js';
 import ContactoRenderer from './renderers/contacto-renderer.js';
 import FooterRenderer from './renderers/footer-renderer.js';
@@ -23,6 +24,7 @@ export function createAppDependencies(options = {}) {
         renderers: options.renderers || {
             header: new HeaderRenderer(),
             hero: new HeroRenderer(),
+            presentacion: new PresentacionRenderer(),
             servicios: new ServiciosRenderer(),
             contacto: new ContactoRenderer(),
             footer: new FooterRenderer()
@@ -53,6 +55,15 @@ class App {
                 if (content.empresa) {
                     config.empresa = { ...(config.empresa || {}), ...content.empresa };
                 }
+                if (content.presentacion) {
+                    config.presentacion = { ...(config.presentacion || {}), ...content.presentacion };
+                }
+                if (content.servicios) {
+                    config.servicios = content.servicios;
+                }
+                if (content.footer) {
+                    config.footer = { ...(config.footer || {}), ...content.footer };
+                }
             }
 
             this.render(config);
@@ -65,6 +76,7 @@ class App {
     render(config) {
         this.renderers.header.render(config);
         this.renderers.hero.render(config);
+        this.renderers.presentacion.render(config);
         this.renderers.servicios.render(config);
         this.renderers.contacto.render(config);
         this.renderers.footer.render(config);
