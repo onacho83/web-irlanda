@@ -50,21 +50,24 @@ class App {
 
             const config = await this.configLoader.load();
             const content = this.contentManager.loadContentFromStorage();
-            if (content) {
-                if (content.welcome) config.welcome = content.welcome;
-                if (content.empresa) {
-                    config.empresa = { ...(config.empresa || {}), ...content.empresa };
-                }
-                if (content.presentacion) {
-                    config.presentacion = { ...(config.presentacion || {}), ...content.presentacion };
-                }
-                if (content.servicios) {
-                    config.servicios = content.servicios;
-                }
-                if (content.footer) {
-                    config.footer = { ...(config.footer || {}), ...content.footer };
-                }
-            }
++            console.log('App.init loaded config:', config);
++            console.log('App.init loaded stored content:', content);
++            // merge overrides from stored content
+             if (content) {
+                 if (content.welcome) config.welcome = content.welcome;
+                 if (content.empresa) {
+                     config.empresa = { ...(config.empresa || {}), ...content.empresa };
+                 }
+                 if (content.presentacion) {
+                     config.presentacion = { ...(config.presentacion || {}), ...content.presentacion };
+                 }
+                 if (content.servicios) {
+                     config.servicios = content.servicios;
+                 }
+                 if (content.footer) {
+                     config.footer = { ...(config.footer || {}), ...content.footer };
+                 }
+             }
 
             this.render(config);
         } catch (error) {

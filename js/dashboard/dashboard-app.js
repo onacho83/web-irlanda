@@ -545,18 +545,21 @@ class DashboardApp {
         try {
             // Primero intentar cargar desde localStorage (cambios persistentes del usuario)
             let content = this.contentManager.loadContentFromStorage();
+            console.log('DashboardApp.loadContentValues content from storage:', content);
             
             if (!content) {
                 // Si no hay datos guardados, cargar desde config.json
                 content = await this.contentManager.loadContent();
                 // Guardar en localStorage para futuras cargas
                 this.contentManager.saveContentToStorage(content);
+                console.log('DashboardApp.loadContentValues loaded from config and saved:', content);
             }
             
             this._fillContentForm(content);
         } catch (error) {
             console.error('Error cargando contenido:', error);
             const stored = this.contentManager.loadContentFromStorage();
+            console.log('DashboardApp.loadContentValues fallback stored:', stored);
             this._fillContentForm(stored || {});
         }
     }
@@ -661,7 +664,10 @@ class DashboardApp {
         const ctaText = get('presentacion-cta-text');
         const ctaLink = get('presentacion-cta-link');
 
-        this.contentManager.updatePresentacion({ titulo, texto, lead, imagen, ctaText, ctaLink });
+        const updated = this.contentManager.updatePresentacion({ titulo, texto, lead, imagen, ctaText, ctaLink });
+        console.log('savePresentacion -> updated content', updated);
+        const storedAfter = this.contentManager.loadContentFromStorage();
+        console.log('savePresentacion -> stored content after save', storedAfter);
         this.notificationService.show('Presentación guardada', 'success');
         // Intentar refrescar preview si existe iframe
         const iframe = document.getElementById('preview-frame');
