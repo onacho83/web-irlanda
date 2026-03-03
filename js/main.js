@@ -50,9 +50,9 @@ class App {
 
             const config = await this.configLoader.load();
             const content = this.contentManager.loadContentFromStorage();
-+            console.log('App.init loaded config:', config);
-+            console.log('App.init loaded stored content:', content);
-+            // merge overrides from stored content
+            console.log('App.init loaded config:', config);
+            console.log('App.init loaded stored content:', content);
+            // merge overrides from stored content
              if (content) {
                  if (content.welcome) config.welcome = content.welcome;
                  if (content.empresa) {
