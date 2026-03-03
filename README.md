@@ -188,4 +188,35 @@ Notas:
   - `npm run deploy:ghpages` — usa `gh-pages` (requiere instalación previa)
 - Si eliges GitHub Pages y prefieres no instalar herramientas, sube el contenido al directorio `docs/` y configúralo desde la UI de GitHub.
 
+### DonWeb (FTP)
+
+Para desplegar en DonWeb normalmente se usan FTP/SFTP desde el panel. Opciones:
+
+- Manual (recomendado si lo haces una vez):
+  1. Comprime el contenido del repo (sin `.git`), o selecciona los archivos desde tu máquina local.
+  2. Accede al panel de DonWeb → Administrador de Archivos o FTP.
+  3. Sube los archivos al public_html (o la carpeta que te indiquen) y asegúrate de que `index.html` quede en la raíz pública.
+
+- Automático (desde tu máquina):
+  - He incluido un script en `deploy/ftp-deploy.js` que usa `basic-ftp`. Para ejecutarlo:
+    1. Crea un fichero `.env` en la raíz con estas variables (no lo subas a Git):
+       ```env
+       FTP_HOST=ftp.tudominio.com
+       FTP_USER=usuario
+       FTP_PASS=contraseña
+       FTP_REMOTE_PATH=/public_html/
+       ```
+    2. Instala la dependencia:
+       ```bash
+       npm install basic-ftp
+       ```
+    3. Ejecuta:
+       ```bash
+       npm run deploy:donweb
+       ```
+
+  - El script sube el contenido del repo al `FTP_REMOTE_PATH` y sobrescribe los archivos.
+  - Si prefieres SFTP, adapta el script o usa un cliente SFTP (FileZilla, WinSCP).
+
+
 
