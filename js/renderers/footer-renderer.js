@@ -29,19 +29,39 @@ class FooterRenderer extends BaseRenderer {
         const telefonosHTML = telefonos.length > 0
             ? telefonos.map(t => {
                 const link = createWhatsAppLink(t.numero);
-                return `<p><a href="${link}" target="_blank" rel="noopener" class="footer-telefono-link whatsapp-link" title="Abrir WhatsApp"><i class="fab fa-whatsapp whatsapp-icon" aria-hidden="true"></i> ${t.etiqueta ? t.etiqueta + ': ' : ''}${t.numero}</a></p>`;
+                const label = t.etiqueta && t.etiqueta.toLowerCase() !== 'principal' ? t.etiqueta + ': ' : '';
+                
+                // Si WhatsApp está habilitado, mostrar como enlace
+                if (t.whatsapp) {
+                    return `<p><a href="${link}" target="_blank" rel="noopener" class="footer-telefono-link whatsapp-link" title="Abrir WhatsApp"><i class="fab fa-whatsapp whatsapp-icon" aria-hidden="true"></i> ${label}${t.numero}</a></p>`;
+                } else {
+                    return `<p>${label}${t.numero}</p>`;
+                }
             }).join('')
             : '';
 
         const sucursalesHTML = sucursales.length > 0
-            ? sucursales.map(s => `
+            ? sucursales.map(s => {
+                // Soportar tanto telefonos (array) como telefono (string) para compatibilidad
+                const telefonos = Array.isArray(s.telefonos) ? s.telefonos : [];
+                const telefonosHTML = telefonos.length > 0
+                    ? telefonos.map(t => {
+                        if (t.whatsapp) {
+                            return `<p style="margin:0.2rem 0;"><a href="${createWhatsAppLink(t.numero)}" target="_blank" rel="noopener" class="footer-telefono-link whatsapp-link"><i class="fab fa-whatsapp whatsapp-icon"></i> ${t.numero}</a></p>`;
+                        } else {
+                            return `<p style="margin:0.2rem 0;"><a href="tel:${t.numero}"><i class="fas fa-phone" style="color: #666; margin-right: 0.25rem;"></i>${t.numero}</a></p>`;
+                        }
+                    }).join('')
+                    : (s.telefono ? `<p style="margin:0.2rem 0;"><a href="tel:${s.telefono}"><i class="fas fa-phone" style="color: #666; margin-right: 0.25rem;"></i>${s.telefono}</a></p>` : '');
+                
+                return `
                 <div class="footer-section" style="flex:1 1 200px;">
                     ${s.nombre ? `<h3>${s.nombre}</h3>` : ''}
                     ${s.direccion ? `<p style="margin:0.2rem 0;">${s.direccion}</p>` : ''}
-                    ${s.telefono ? `<p style="margin:0.2rem 0;"><a href="${createWhatsAppLink(s.telefono)}" target="_blank" rel="noopener" class="footer-telefono-link whatsapp-link"><i class="fab fa-whatsapp whatsapp-icon"></i> ${s.telefono}</a></p>` : ''}
+                    ${telefonosHTML}
                     ${s.email ? `<p style="margin:0.2rem 0;">${s.email}</p>` : ''}
                 </div>
-            `).join('')
+            `}).join('')
             : '';
 
         // estilo de layout: columnas de footer-section

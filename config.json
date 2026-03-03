@@ -5,7 +5,8 @@
     "telefonos": [
       {
         "numero": "11 4951 6535",
-        "etiqueta": "Principal"
+        "etiqueta": "Principal",
+        "whatsapp": true
       }
     ],
     "email": "info@imprentairlanda.com",

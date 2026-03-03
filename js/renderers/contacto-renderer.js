@@ -48,40 +48,33 @@ class ContactoRenderer extends BaseRenderer {
         const telefonosHTML = telefonos.length > 0
             ? telefonos.map(t => {
                 const link = createWhatsAppLink(t.numero);
-                // omit etiqueta if it's "Principal" (case-insensitive)
                 const label = t.etiqueta && t.etiqueta.toLowerCase() !== 'principal' ? `${t.etiqueta}: ` : '';
-                return `<p style="margin: 0.375rem 0; font-size: 0.9rem;">
-                    <strong>${label}</strong>
-                    <a href="${link}" target="_blank" rel="noopener" class="telefono-link whatsapp-link" title="Abrir WhatsApp">
-                        <i class="fab fa-whatsapp whatsapp-icon" aria-hidden="true"></i> ${t.numero}
-                    </a>
-                </p>`;
+
+                if (t.whatsapp) {
+                    return `<p style="margin: 0.375rem 0; font-size: 0.9rem;"><strong>${label}</strong> <a href="${link}" target="_blank" rel="noopener" class="telefono-link whatsapp-link" title="Abrir WhatsApp"><i class="fab fa-whatsapp whatsapp-icon" aria-hidden="true"></i> ${t.numero}</a></p>`;
+                }
+
+                return `<p style="margin: 0.375rem 0; font-size: 0.9rem;"><strong>${label}</strong> <a href="tel:${t.numero}" title="Llamar"><i class="fas fa-phone" style="color: #666; margin-right: 0.25rem;"></i>${t.numero}</a></p>`;
             }).join('')
             : '';
 
         const emailHTML = empresa.email
-            ? `<p style="margin: 0.375rem 0; font-size: 0.9rem;">
-                <strong>✉️ Email:</strong> <a href="mailto:${empresa.email}">${empresa.email}</a>
-            </p>`
+            ? `<p style="margin: 0.375rem 0; font-size: 0.9rem;"><strong>✉️ Email:</strong> <a href="mailto:${empresa.email}">${empresa.email}</a></p>`
             : '';
 
         return `
             <div style="padding: 1.5rem; border: 1px solid #e5e7eb; border-radius: 0.75rem; background: #ffffff; margin-bottom: 2rem;">
                 <h3 style="margin: 0 0 1rem 0; font-size: 1.375rem;">${empresa.nombre || 'Empresa Central'}</h3>
-                
+
                 ${empresa.direccion ? `
-                <p style="margin: 0.375rem 0; font-size: 0.9rem;">
-                    <strong>📍 Dirección:</strong> ${empresa.direccion}
-                </p>
+                <p style="margin: 0.375rem 0; font-size: 0.9rem;"><strong>📍 Dirección:</strong> ${empresa.direccion}</p>
                 ` : ''}
 
                 ${telefonosHTML}
                 ${emailHTML}
 
                 ${empresa.horario ? `
-                <p style="margin: 0.375rem 0; font-size: 0.9rem;">
-                    <strong>🕐 Horario:</strong> ${empresa.horario}
-                </p>
+                <p style="margin: 0.375rem 0; font-size: 0.9rem;"><strong>🕐 Horario:</strong> ${empresa.horario}</p>
                 ` : ''}
             </div>
         `;
@@ -93,13 +86,24 @@ class ContactoRenderer extends BaseRenderer {
      * @returns {string}
      */
     _renderSucursalCard(sucursal) {
-        const telefonoHTML = sucursal.telefono
-            ? `<p style="margin: 0.375rem 0; font-size: 0.9rem;">
-                <a href="${createWhatsAppLink(sucursal.telefono)}" target="_blank" rel="noopener" class="telefono-link whatsapp-link">
-                    <i class="fab fa-whatsapp whatsapp-icon"></i> ${sucursal.telefono}
-                </a>
-            </p>`
-            : '';
+        const telefonos = Array.isArray(sucursal.telefonos) ? sucursal.telefonos : [];
+        const telefonoHTML = telefonos.length > 0
+            ? telefonos.map(t => {
+                if (t.whatsapp) {
+                    return `<p style="margin: 0.375rem 0; font-size: 0.9rem;">
+                        <a href="${createWhatsAppLink(t.numero)}" target="_blank" rel="noopener" class="telefono-link whatsapp-link">
+                            <i class="fab fa-whatsapp whatsapp-icon"></i> ${t.numero}
+                        </a>
+                    </p>`;
+                } else {
+                    return `<p style="margin: 0.375rem 0; font-size: 0.9rem;">
+                        <a href="tel:${t.numero}" title="Llamar">
+                            <i class="fas fa-phone" style="color: #666; margin-right: 0.25rem;"></i>${t.numero}
+                        </a>
+                    </p>`;
+                }
+            }).join('')
+            : (sucursal.telefono ? `<p style="margin: 0.375rem 0; font-size: 0.9rem;"><a href="tel:${sucursal.telefono}" title="Llamar"><i class="fas fa-phone" style="color: #666; margin-right: 0.25rem;"></i>${sucursal.telefono}</a></p>` : '');
 
         const horarioHTML = sucursal.horario
             ? `<p style="margin: 0.375rem 0; font-size: 0.9rem;">

@@ -55,6 +55,7 @@ class DashboardApp {
         this.sectionControls = d.sectionControls;
 
         this.currentSection = getAllSections()[0]?.id || 'header';
+        this.currentSucursalIndex = -1; // Para rastrear qué sucursal se está editando
 
         this.initializeControls();
         this.loadCurrentValues();
@@ -193,22 +194,32 @@ class DashboardApp {
         const addBtn = document.getElementById('add-sucursal-btn');
         const saveBtn = document.getElementById('save-sucursal-btn');
         const cancelBtn = document.getElementById('cancel-sucursal-btn');
+        const addTelBtn = document.getElementById('add-sucursal-telefono-btn');
+        const saveTelBtn = document.getElementById('save-sucursal-telefono-btn');
+        const cancelTelBtn = document.getElementById('cancel-sucursal-telefono-btn');
+        
         if (addBtn) addBtn.addEventListener('click', () => this._showSucursalForm(-1));
         if (saveBtn) saveBtn.addEventListener('click', () => this._saveSucursal());
         if (cancelBtn) cancelBtn.addEventListener('click', () => this._hideSucursalForm());
+        if (addTelBtn) addTelBtn.addEventListener('click', () => this._showSucursalTelefonoForm(-1));
+        if (saveTelBtn) saveTelBtn.addEventListener('click', () => this._saveSucursalTelefono());
+        if (cancelTelBtn) cancelTelBtn.addEventListener('click', () => this._hideSucursalTelefonoForm());
     }
 
     _renderTelefonosList() {
         const list = document.getElementById('telefonos-list');
         if (!list) return;
         const telefonos = this.contentManager.getTelefonos();
-        list.innerHTML = telefonos.map((t, i) => `
+        list.innerHTML = telefonos.map((t, i) => {
+            const whatsappBadge = t.whatsapp ? '<span style="display:inline-block;background:#25d366;color:white;padding:0.25rem 0.5rem;border-radius:0.25rem;font-size:0.75rem;margin-left:0.5rem;">WhatsApp</span>' : '';
+            return `
             <div class="telefono-item" style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem;background:#f9fafb;border-radius:0.375rem;">
-                <span><strong>${t.etiqueta || 'Teléfono'}:</strong> ${t.numero}</span>
+                <span><strong>${t.etiqueta || 'Teléfono'}:</strong> ${t.numero}${whatsappBadge}</span>
                 <button type="button" class="btn btn-small" data-edit-telefono="${i}">Editar</button>
                 <button type="button" class="btn btn-small btn-danger" data-delete-telefono="${i}">Eliminar</button>
             </div>
-        `).join('') || '<p style="color:#6b7280;font-size:0.875rem;">No hay teléfonos. Agrega uno con el botón.</p>';
+        `;
+        }).join('') || '<p style="color:#6b7280;font-size:0.875rem;">No hay teléfonos. Agrega uno con el botón.</p>';
         list.querySelectorAll('[data-edit-telefono]').forEach(btn => {
             btn.addEventListener('click', () => this._showTelefonoForm(parseInt(btn.dataset.editTelefono, 10)));
         });
@@ -221,6 +232,7 @@ class DashboardApp {
         const form = document.getElementById('telefono-form');
         const numeroInput = document.getElementById('telefono-numero');
         const etiquetaInput = document.getElementById('telefono-etiqueta');
+        const whatsappInput = document.getElementById('telefono-whatsapp');
         const indexInput = document.getElementById('telefono-index');
         if (!form || !numeroInput) return;
         if (indexInput) indexInput.value = String(index);
@@ -228,9 +240,11 @@ class DashboardApp {
             const t = this.contentManager.getTelefonos()[index];
             numeroInput.value = t?.numero || '';
             etiquetaInput.value = t?.etiqueta || '';
+            if (whatsappInput) whatsappInput.checked = t?.whatsapp || false;
         } else {
             numeroInput.value = '';
             etiquetaInput.value = '';
+            if (whatsappInput) whatsappInput.checked = false;
         }
         form.style.display = 'block';
     }
@@ -243,13 +257,14 @@ class DashboardApp {
     _saveTelefono() {
         const numero = (document.getElementById('telefono-numero') || {}).value?.trim();
         const etiqueta = (document.getElementById('telefono-etiqueta') || {}).value?.trim();
+        const whatsapp = (document.getElementById('telefono-whatsapp') || {}).checked || false;
         const index = parseInt((document.getElementById('telefono-index') || {}).value, 10);
         if (!numero) {
             this.notificationService.show('El número es obligatorio', 'info');
             return;
         }
         const telefonos = [...this.contentManager.getTelefonos()];
-        const item = { numero, etiqueta: etiqueta || undefined };
+        const item = { numero, etiqueta: etiqueta || undefined, whatsapp };
         if (index >= 0 && index < telefonos.length) {
             telefonos[index] = item;
         } else {
@@ -272,17 +287,23 @@ class DashboardApp {
         const list = document.getElementById('sucursales-list');
         if (!list) return;
         const sucursales = this.contentManager.getSucursales();
-        list.innerHTML = sucursales.map((s, i) => `
+        list.innerHTML = sucursales.map((s, i) => {
+            const telefonosHTML = (s.telefonos || []).map(t => 
+                `<p style="margin:0.125rem 0 0;font-size:0.875rem;">📞 ${t.numero}${t.whatsapp ? ' <span style="color:#25d366;"><i class="fab fa-whatsapp"></i></span>' : ''}</p>`
+            ).join('') || (s.telefono ? `<p style="margin:0.125rem 0 0;font-size:0.875rem;">📞 ${s.telefono}</p>` : '');
+            
+            return `
             <div class="sucursal-item" style="padding:0.75rem;background:#f9fafb;border-radius:0.5rem;border:1px solid #e5e7eb;">
                 <strong>${s.nombre || 'Sucursal'}</strong>
                 <p style="margin:0.25rem 0 0;font-size:0.875rem;color:#4b5563;">${s.direccion || ''}</p>
-                ${s.telefono ? `<p style="margin:0.125rem 0 0;font-size:0.875rem;">📞 ${s.telefono}</p>` : ''}
+                ${telefonosHTML}
                 <div style="margin-top:0.5rem;">
                     <button type="button" class="btn btn-small" data-edit-sucursal="${i}">Editar</button>
                     <button type="button" class="btn btn-small btn-danger" data-delete-sucursal="${i}">Eliminar</button>
                 </div>
             </div>
-        `).join('') || '<p style="color:#6b7280;font-size:0.875rem;">No hay sucursales. Agrega una con el botón.</p>';
+        `;
+        }).join('') || '<p style="color:#6b7280;font-size:0.875rem;">No hay sucursales. Agrega una con el botón.</p>';
         list.querySelectorAll('[data-edit-sucursal]').forEach(btn => {
             btn.addEventListener('click', () => this._showSucursalForm(parseInt(btn.dataset.editSucursal, 10)));
         });
@@ -295,20 +316,24 @@ class DashboardApp {
         const form = document.getElementById('sucursal-form');
         const indexInput = document.getElementById('sucursal-index');
         if (!form) return;
+        
+        this.currentSucursalIndex = index;
         if (indexInput) indexInput.value = String(index);
+        
         if (index >= 0) {
             const s = this.contentManager.getSucursales()[index];
             const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
             set('sucursal-nombre', s?.nombre);
             set('sucursal-direccion', s?.direccion);
-            set('sucursal-telefono', s?.telefono);
             set('sucursal-horario', s?.horario);
             set('sucursal-email', s?.email);
+            this._renderSucursalTelefonosList(s?.telefonos || []);
         } else {
-            ['sucursal-nombre', 'sucursal-direccion', 'sucursal-telefono', 'sucursal-horario', 'sucursal-email'].forEach(id => {
+            ['sucursal-nombre', 'sucursal-direccion', 'sucursal-horario', 'sucursal-email'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = '';
             });
+            this._renderSucursalTelefonosList([]);
         }
         form.style.display = 'block';
     }
@@ -322,21 +347,40 @@ class DashboardApp {
         const get = (id) => (document.getElementById(id) || {}).value?.trim();
         const nombre = get('sucursal-nombre');
         const direccion = get('sucursal-direccion');
-        const telefono = get('sucursal-telefono');
         const horario = get('sucursal-horario');
         const email = get('sucursal-email');
         const index = parseInt((document.getElementById('sucursal-index') || {}).value, 10);
+        
         if (!nombre || !direccion) {
             this.notificationService.show('Nombre y dirección son obligatorios', 'info');
             return;
         }
+        
         const sucursales = [...this.contentManager.getSucursales()];
-        const item = { nombre, direccion, telefono: telefono || undefined, horario: horario || undefined, email: email || undefined };
+        const telefonosList = document.getElementById('sucursal-telefonos-list');
+        const telefonos = [];
+        
+        // Recolectar teléfonos de los elementos guardados
+        telefonosList?.querySelectorAll('[data-sucursal-telefono-index]').forEach(el => {
+            const numero = el.dataset.numero;
+            const whatsapp = el.dataset.whatsapp === 'true';
+            if (numero) telefonos.push({ numero, whatsapp });
+        });
+        
+        const item = {
+            nombre,
+            direccion,
+            telefonos: telefonos.length > 0 ? telefonos : undefined,
+            horario: horario || undefined,
+            email: email || undefined
+        };
+        
         if (index >= 0 && index < sucursales.length) {
             sucursales[index] = item;
         } else {
             sucursales.push(item);
         }
+        
         this.contentManager.updateSucursales(sucursales);
         this._renderSucursalesList();
         this._hideSucursalForm();
@@ -348,6 +392,114 @@ class DashboardApp {
         this.contentManager.updateSucursales(sucursales);
         this._renderSucursalesList();
         this.notificationService.show('Sucursal eliminada', 'success');
+    }
+
+    _renderSucursalTelefonosList(telefonos) {
+        const list = document.getElementById('sucursal-telefonos-list');
+        if (!list) return;
+        
+        list.innerHTML = (telefonos || []).map((t, i) => {
+            const whatsappBadge = t.whatsapp ? '<span style="display:inline-block;background:#25d366;color:white;padding:0.25rem 0.5rem;border-radius:0.25rem;font-size:0.75rem;margin-left:0.5rem;">WhatsApp</span>' : '';
+            return `
+            <div data-sucursal-telefono-index="${i}" data-numero="${t.numero}" data-whatsapp="${t.whatsapp || false}" 
+                 style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem;background:#ffffff;border:1px solid #dee2e6;border-radius:0.375rem;">
+                <span>${t.numero}${whatsappBadge}</span>
+                <button type="button" class="btn btn-small" data-edit-sucursal-telefono="${i}" style="margin-left: auto;">Editar</button>
+                <button type="button" class="btn btn-small btn-danger" data-delete-sucursal-telefono="${i}">Eliminar</button>
+            </div>
+            `;
+        }).join('');
+        
+        list.querySelectorAll('[data-edit-sucursal-telefono]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const i = parseInt(btn.dataset.editSucursalTelefono, 10);
+                const t = (telefonos || [])[i];
+                if (t) this._showSucursalTelefonoForm(i, t);
+            });
+        });
+        
+        list.querySelectorAll('[data-delete-sucursal-telefono]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const i = parseInt(btn.dataset.deleteSucursalTelefono, 10);
+                const newTelefonos = (telefonos || []).filter((_, idx) => idx !== i);
+                this._renderSucursalTelefonosList(newTelefonos);
+                // Actualizar el atributo data de los elementos para que se guarden correctamente
+                this._updateSucursalTelefonosData(newTelefonos);
+            });
+        });
+    }
+
+    _updateSucursalTelefonosData(telefonos) {
+        // Actualizar los atributos data de los elementos para guardarlos correctamente
+        const list = document.getElementById('sucursal-telefonos-list');
+        if (!list) return;
+        list.querySelectorAll('[data-sucursal-telefono-index]').forEach((el, i) => {
+            const t = telefonos[i];
+            if (t) {
+                el.dataset.numero = t.numero;
+                el.dataset.whatsapp = t.whatsapp || false;
+            }
+        });
+    }
+
+    _showSucursalTelefonoForm(index = -1, telefono = null) {
+        const form = document.getElementById('sucursal-telefono-form');
+        const numeroInput = document.getElementById('sucursal-telefono-numero');
+        const whatsappInput = document.getElementById('sucursal-telefono-whatsapp');
+        const indexInput = document.getElementById('sucursal-telefono-index');
+        const saveBtn = document.getElementById('save-sucursal-telefono-btn');
+        
+        if (!form || !numeroInput) return;
+        
+        if (indexInput) indexInput.value = String(index);
+        
+        if (index >= 0 && telefono) {
+            numeroInput.value = telefono.numero || '';
+            if (whatsappInput) whatsappInput.checked = telefono.whatsapp || false;
+        } else {
+            numeroInput.value = '';
+            if (whatsappInput) whatsappInput.checked = false;
+        }
+        
+        form.style.display = 'block';
+    }
+
+    _hideSucursalTelefonoForm() {
+        const form = document.getElementById('sucursal-telefono-form');
+        if (form) form.style.display = 'none';
+    }
+
+    _saveSucursalTelefono() {
+        const numero = (document.getElementById('sucursal-telefono-numero') || {}).value?.trim();
+        const whatsapp = (document.getElementById('sucursal-telefono-whatsapp') || {}).checked || false;
+        const index = parseInt((document.getElementById('sucursal-telefono-index') || {}).value, 10);
+        
+        if (!numero) {
+            this.notificationService.show('El número es obligatorio', 'info');
+            return;
+        }
+        
+        const list = document.getElementById('sucursal-telefonos-list');
+        const existingTelefonos = [];
+        
+        // Recolectar teléfonos existentes
+        list?.querySelectorAll('[data-sucursal-telefono-index]').forEach(el => {
+            const n = el.dataset.numero;
+            const w = el.dataset.whatsapp === 'true';
+            if (n) existingTelefonos.push({ numero: n, whatsapp: w });
+        });
+        
+        const item = { numero, whatsapp };
+        
+        if (index >= 0 && index < existingTelefonos.length) {
+            existingTelefonos[index] = item;
+        } else {
+            existingTelefonos.push(item);
+        }
+        
+        this._renderSucursalTelefonosList(existingTelefonos);
+        this._hideSucursalTelefonoForm();
+        this.notificationService.show('Teléfono guardado', 'success');
     }
 
     toggleBackgroundControls(type) {
