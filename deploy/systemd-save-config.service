@@ -1,0 +1,24 @@
+[Unit]
+Description=Save Config Node Service (save-config)
+After=network.target
+
+[Service]
+Type=simple
+# Ajusta el usuario bajo el cual correrá el servicio (ej: www-data, nodeuser)
+User=www-data
+WorkingDirectory=/var/www/web-irlanda
+ExecStart=/usr/bin/env node server/save-config.js
+Restart=on-failure
+RestartSec=5s
+Environment=NODE_ENV=production
+Environment=DEPLOY_TOKEN=your-deploy-token-here
+
+[Install]
+WantedBy=multi-user.target
+
+; Notes:
+; - Copy this file to /etc/systemd/system/save-config.service and edit WorkingDirectory and DEPLOY_TOKEN.
+; - Then enable and start:
+;   sudo systemctl daemon-reload
+;   sudo systemctl enable save-config
+;   sudo systemctl start save-config

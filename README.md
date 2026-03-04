@@ -232,5 +232,29 @@ Para desplegar en DonWeb normalmente se usan FTP/SFTP desde el panel. Opciones:
 
   Nota: si tu hosting no permite Node, el dashboard seguirá intentando el endpoint PHP `save-config.php` como fallback.
 
+  #### Ejecutar en producción (ejemplos)
+
+  Si quieres ejecutar el servidor Node en producción con manejo de procesos, tienes dos opciones comunes.
+
+  - `systemd` (Linux): crea el archivo `/etc/systemd/system/save-config.service` con el contenido de `deploy/systemd-save-config.service`, ajusta `WorkingDirectory` y `DEPLOY_TOKEN`, y ejecuta:
+
+  ```bash
+  sudo systemctl daemon-reload
+  sudo systemctl enable save-config
+  sudo systemctl start save-config
+  sudo journalctl -u save-config -f
+  ```
+
+  - `pm2`: usa el archivo `deploy/ecosystem.config.js`. Instala `pm2` y arranca el proceso:
+
+  ```bash
+  npm i -g pm2
+  pm2 start deploy/ecosystem.config.js
+  pm2 save
+  pm2 startup
+  ```
+
+  Ambos enfoques asegurarán que el servicio se reinicie automáticamente y que el endpoint `/save-config` esté disponible para las peticiones desde el dashboard.
+
 
 
