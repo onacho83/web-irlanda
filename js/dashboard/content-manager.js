@@ -18,6 +18,56 @@ export default class ContentManager {
         this.configPath = options.configPath ?? 'config.json';
     }
 
+    /**
+     * Publica el contenido en el servidor sobrescribiendo config.json.
+     * @param {string} token - token secreto para autenticar la petición
+     * @returns {Promise<{ok: boolean, error?: string}>}
+     */
+    async publishContent(token) {
+        try {
+            const content = this.loadContentFromStorage() || await this.loadContent().catch(() => (this.loadContentFromStorage() || {}));
+            // First try Node endpoint /save-config
+            try {
+                const res = await fetch('/save-config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-DEPLOY-TOKEN': token || ''
+                    },
+                    body: JSON.stringify(content)
+                });
+                if (res.ok) {
+                    const data = await res.json().catch(() => ({ ok: true }));
+                    return { ok: data.ok === true };
+                }
+            } catch (e) {
+                // ignore and fallback to php endpoint if present
+            }
+
+            // Fallback to PHP endpoint for environments that still use it
+            try {
+                const res2 = await fetch('./save-config.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-DEPLOY-TOKEN': token || ''
+                    },
+                    body: JSON.stringify(content)
+                });
+                if (!res2.ok) {
+                    const body = await res2.json().catch(() => ({}));
+                    return { ok: false, error: body.error || res2.statusText };
+                }
+                const data2 = await res2.json().catch(() => ({ ok: true }));
+                return { ok: data2.ok === true };
+            } catch (err2) {
+                return { ok: false, error: String(err2) };
+            }
+        } catch (err) {
+            return { ok: false, error: String(err) };
+        }
+    }
+
     _getStored() {
         if (this.storage) return this.storage.get(this.contentKey);
         try {
@@ -93,7 +143,7 @@ export default class ContentManager {
         return content?.empresa || {};
     }
 
-    /** @returns {{ numero: string, etiqueta?: string }[]} */
+    /** @returns {{ numero: string, etiqueta?: string, whatsapp?: boolean }[]} */
     getTelefonos() {
         const content = this.loadContentFromStorage();
         const empresa = content?.empresa || {};
@@ -102,7 +152,7 @@ export default class ContentManager {
         return [];
     }
 
-    /** @param {{ numero: string, etiqueta?: string }[]} telefonos */
+    /** @param {{ numero: string, etiqueta?: string, whatsapp?: boolean }[]} telefonos */
     updateTelefonos(telefonos) {
         const content = this.loadContentFromStorage() || {};
         if (!content.empresa) content.empresa = {};

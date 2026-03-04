@@ -218,5 +218,19 @@ Para desplegar en DonWeb normalmente se usan FTP/SFTP desde el panel. Opciones:
   - El script sube el contenido del repo al `FTP_REMOTE_PATH` y sobrescribe los archivos.
   - Si prefieres SFTP, adapta el script o usa un cliente SFTP (FileZilla, WinSCP).
 
+  ### Node.js server endpoint (recomendado si el hosting soporta Node)
+
+  Si tu hosting permite ejecutar Node.js (o tienes un servidor separado), puedes usar el endpoint Node que incluye el proyecto:
+
+  1. Define el token en la variable de entorno `DEPLOY_TOKEN` en el servidor y arranca el servidor:
+
+  ```bash
+  DEPLOY_TOKEN="tu-token-secreto" node server/save-config.js
+  ```
+
+  2. El servidor escuchará en el puerto `3000` por defecto; desde el dashboard pulsa **Guardar en config.json** introduciendo el mismo token.
+
+  Nota: si tu hosting no permite Node, el dashboard seguirá intentando el endpoint PHP `save-config.php` como fallback.
+
 
 
